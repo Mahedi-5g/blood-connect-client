@@ -13,7 +13,7 @@ import Image from "next/image";
 
 function Footer() {
     return (
-        <footer className="border-t bg-linear-to-b from-background to-default-100">
+        <footer className="bg-linear-to-br from-slate-950 via-slate-900 to-red-950/30 text-slate-300">
             <div className="max-w-7xl mx-auto px-6 py-14">
                 <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
                     {/* Brand */}
@@ -49,7 +49,7 @@ function Footer() {
 
                     {/* Quick Links */}
                     <div>
-                        <h3 className="font-semibold text-lg mb-4">
+                        <h3 className="text-lg font-semibold text-white">
                             Quick Links
                         </h3>
 
@@ -80,31 +80,35 @@ function Footer() {
 
                     {/* Support */}
                     <div>
-                        <h3 className="font-semibold text-lg mb-4">
+                        <h3 className="text-lg font-semibold text-white">
                             Support
                         </h3>
 
                         <ul className="space-y-2">
                             <li>
-                                <Link href="/about">
+                                <Link href="/about"
+                                    className="text-slate-400 hover:text-red-500 transition-colors">
                                     About Us
                                 </Link>
                             </li>
 
                             <li>
-                                <Link href="/contact">
+                                <Link href="/contact"
+                                    className="text-slate-400 hover:text-red-500 transition-colors">
                                     Contact
                                 </Link>
                             </li>
 
                             <li>
-                                <Link href="/privacy-policy">
+                                <Link href="/privacy-policy"
+                                    className="text-slate-400 hover:text-red-500 transition-colors">
                                     Privacy Policy
                                 </Link>
                             </li>
 
                             <li>
-                                <Link href="/terms">
+                                <Link href="/terms"
+                                    className="text-slate-400 hover:text-red-500 transition-colors">
                                     Terms & Conditions
                                 </Link>
                             </li>
@@ -112,22 +116,28 @@ function Footer() {
                     </div>
 
                     <div>
-                        <h3 className="font-semibold text-lg mb-4">
+                        <h3 className="text-lg font-semibold text-white">
                             Contact
                         </h3>
 
                         <div className="space-y-2 text-default-600">
-                            <p className="flex items-center gap-1"><LocationArrow></LocationArrow> Dhaka, Bangladesh</p>
-                            <p className="flex items-center gap-1"><Handset></Handset> +880 1234-567890</p>
-                            <p className="flex items-center gap-1"><Envelope ></Envelope> support@bloodconnect.com</p>
+                            <p className="flex items-center gap-1">
+                                <LocationArrow
+                                    className="text-slate-400 hover:text-red-500 transition-all duration-300 hover:scale-110">
+                                </LocationArrow> Dhaka, Bangladesh</p>
+                            <p className="flex items-center gap-1"><Handset
+                                className="text-slate-400 hover:text-red-500 transition-all duration-300 hover:scale-110">
+                            </Handset> +880 1234-567890</p>
+                            <p className="flex items-center gap-1"><Envelope
+                                className="text-slate-400 hover:text-red-500 transition-all duration-300 hover:scale-110">
+                            </Envelope> support@bloodconnect.com</p>
                         </div>
                     </div>
                 </div>
 
                 <div className="mt-10 border-t pt-6 flex flex-col md:flex-row items-center justify-around gap-4">
                     <p className="text-sm text-default-500">
-                        © {new Date().getFullYear()} BloodConnect. All rights
-                        reserved.
+                       © 2026 BloodConnect. All rights reserved.
                     </p>
 
                     <div className="flex items-center gap-4">
