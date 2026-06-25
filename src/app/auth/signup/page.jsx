@@ -57,6 +57,7 @@ export default function SignUpPage() {
     });
 
     const [selectedBlood, setSelectedBlood] = useState("");
+    const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -72,11 +73,42 @@ export default function SignUpPage() {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => setImagePreview(reader.result);
-            reader.readAsDataURL(file);
+
+        if (!file) return;
+
+        setImageFile(file);
+
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            setImagePreview(reader.result);
+        };
+
+        reader.readAsDataURL(file);
+    };
+
+    const uploadImageToImageBB = async () => {
+        if (!imageFile) return "";
+
+        const formData = new FormData();
+
+        formData.append("image", imageFile);
+
+        const res = await fetch(
+            `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+            {
+                method: "POST",
+                body: formData,
+            }
+        );
+
+        const data = await res.json();
+
+        if (!data.success) {
+            throw new Error("Image upload failed");
         }
+
+        return data.data.display_url;
     };
 
     const handleRegister = async (e) => {
@@ -103,12 +135,13 @@ export default function SignUpPage() {
         }
 
         setLoading(true);
+        const imageUrl = await uploadImageToImageBB();
 
         const { error: authError } = await authClient.signUp.email({
             email: formData.email,
             password: formData.password,
             name: formData.name,
-            image: imagePreview,
+            image: imageUrl,
             data: {
                 phone: formData.phone,
                 gender: formData.gender,

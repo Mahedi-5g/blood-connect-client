@@ -74,7 +74,7 @@ function Navbar() {
                 </ul>
                 <ul className="hidden items-end gap-4 md:flex">
                     <li>
-                        <Link className='mb-1' href="/login">Login</Link>
+                        <Link className='mb-1' href="/auth/login">Login</Link>
                     </li>
                     <li>
                         <Button variant="danger">Join as Donor</Button>
@@ -96,7 +96,7 @@ function Navbar() {
                     </ul>
                     <ul className="flex flex-col gap-2 p-4">
                     <li>
-                        <Link className='mb-1' href="/login">Login</Link>
+                        <Link className='mb-1' href="/auth/login">Login</Link>
                     </li>
                     <li>
                         <Button variant="danger">Join as Donor</Button>
