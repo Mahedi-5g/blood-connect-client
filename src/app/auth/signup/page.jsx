@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import {
     FaUser,
@@ -16,13 +16,35 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
-// ছবির ডিজাইন অনুযায়ী ১০০% নিখুঁত ইনপুট স্টাইল (Tailwind CSS)
+
 const labelClass = "text-[#334155] font-bold text-sm mb-2 tracking-tight block";
 const wrapperClass = "w-full h-14 bg-white border border-slate-200 focus-within:border-red-400 focus-within:ring-[4px] focus-within:ring-red-500/10 rounded-xl transition-all duration-200 flex items-center px-4 gap-3";
 const inputClass = "text-slate-800 text-sm font-medium placeholder:text-slate-400 w-full bg-transparent outline-none border-none p-0 focus:ring-0";
 const selectClass = "w-full h-14 bg-white border border-slate-200 focus:border-red-400 focus:ring-[4px] focus:ring-red-500/10 rounded-xl transition-all duration-200 flex items-center px-4 gap-3 appearance-none cursor-pointer text-slate-800 text-sm font-medium outline-none";
 
 export default function SignUpPage() {
+    const [districts, setDistricts] = useState([]);
+    const [allUpazilas, setAllUpazilas] = useState([]);
+    const [filteredUpazilas, setFilteredUpazilas] = useState([]);
+
+    useEffect(() => {
+        const loadData = async () => {
+            const districtRes = await fetch("/data/districts.json");
+            const districtJson = await districtRes.json();
+
+            const upazilaRes = await fetch("/data/upazilas.json");
+            const upazilaJson = await upazilaRes.json();
+
+            const districtData = districtJson[2].data;
+            const upazilaData = upazilaJson[2].data;
+
+            setDistricts(districtData);
+            setAllUpazilas(upazilaData);
+        };
+
+        loadData();
+    }, []);
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -61,6 +83,10 @@ export default function SignUpPage() {
         e.preventDefault();
         setError("");
 
+        const selectedDistrict = districts.find(
+            (d) => String(d.id) === String(formData.district)
+        );
+
         if (!formData.name || !formData.email || !formData.phone) {
             setError("Please fill in all required fields.");
             return;
@@ -86,7 +112,7 @@ export default function SignUpPage() {
             data: {
                 phone: formData.phone,
                 gender: formData.gender,
-                district: formData.district,
+                district: selectedDistrict?.name || "",
                 upazila: formData.upazila,
                 bloodGroup: selectedBlood
             }
@@ -222,14 +248,31 @@ export default function SignUpPage() {
                                     <FaMapMarkerAlt />
                                 </span>
                                 <select
-                                    className={`${selectClass} pl-11`}
                                     value={formData.district}
-                                    onChange={(e) => handleInputChange("district", e.target.value)}
+                                    className="w-full h-14 pl-11 pr-10 border border-slate-200 rounded-xl"
+                                    onChange={(e) => {
+                                        const districtId = e.target.value;
+
+                                        // district id store করো
+                                        handleInputChange("district", districtId);
+
+                                        const filtered = allUpazilas.filter(
+                                            (u) => String(u.district_id) === String(districtId)
+                                        );
+
+                                        setFilteredUpazilas(filtered);
+
+                                        // reset upazila
+                                        handleInputChange("upazila", "");
+                                    }}
                                 >
-                                    <option value="" disabled hidden>Select District</option>
-                                    <option value="dhaka">Dhaka</option>
-                                    <option value="chittagong">Chittagong</option>
-                                    <option value="rangpur">Rangpur</option>
+                                    <option value="">Select District</option>
+
+                                    {districts.map((district) => (
+                                        <option key={district.id} value={district.id}>
+                                            {district.name}
+                                        </option>
+                                    ))}
                                 </select>
                                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none">
                                     <FaChevronDown />
@@ -244,14 +287,22 @@ export default function SignUpPage() {
                                     <FaCompass />
                                 </span>
                                 <select
-                                    className={`${selectClass} pl-11`}
                                     value={formData.upazila}
-                                    onChange={(e) => handleInputChange("upazila", e.target.value)}
+                                    className="w-full h-14 pl-11 pr-10 border border-slate-200 rounded-xl"
+                                    onChange={(e) =>
+                                        handleInputChange("upazila", e.target.value)
+                                    }
                                 >
-                                    <option value="" disabled hidden>Select Upazila</option>
-                                    <option value="savar">Savar</option>
-                                    <option value="tongi">Tongi</option>
-                                    <option value="mirpur">Mirpur</option>
+                                    <option value="">Select Upazila</option>
+
+                                    {filteredUpazilas.map((upazila) => (
+                                        <option
+                                            key={upazila.id}
+                                            value={upazila.name}
+                                        >
+                                            {upazila.name}
+                                        </option>
+                                    ))}
                                 </select>
                                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none">
                                     <FaChevronDown />
