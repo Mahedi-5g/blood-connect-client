@@ -15,6 +15,7 @@ import {
 } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
+import { IoIosWarning } from "react-icons/io";
 
 
 const labelClass = "text-[#334155] font-bold text-sm mb-2 tracking-tight block";
@@ -194,8 +195,8 @@ export default function SignUpPage() {
 
                 {/* Error Box */}
                 {error && (
-                    <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm font-semibold border border-red-100">
-                        ⚠️ {error}
+                    <div className=" flex gap-2 mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm font-semibold border border-red-100">
+                        <IoIosWarning /> {error}
                     </div>
                 )}
 
@@ -207,7 +208,7 @@ export default function SignUpPage() {
                         <div>
                             <label className={labelClass}>Full Name</label>
                             <div className={wrapperClass}>
-                                <FaUser className="text-slate-400 text-base flex-shrink-0" />
+                                <FaUser className="text-slate-400 text-base shrink-0" />
                                 <input
                                     type="text"
                                     placeholder="Enter your full name"
@@ -221,7 +222,7 @@ export default function SignUpPage() {
                         <div>
                             <label className={labelClass}>Email Address</label>
                             <div className={wrapperClass}>
-                                <FaEnvelope className="text-slate-400 text-base flex-shrink-0" />
+                                <FaEnvelope className="text-slate-400 text-base shrink-0" />
                                 <input
                                     type="email"
                                     placeholder="name@example.com"
@@ -238,7 +239,7 @@ export default function SignUpPage() {
                         <div>
                             <label className={labelClass}>Phone Number</label>
                             <div className={wrapperClass}>
-                                <FaPhone className="text-slate-400 text-base flex-shrink-0" />
+                                <FaPhone className="text-slate-400 text-base shrink-0" />
                                 <input
                                     type="tel"
                                     placeholder="+880 1XXX XXXXXX"
@@ -286,7 +287,7 @@ export default function SignUpPage() {
                                     onChange={(e) => {
                                         const districtId = e.target.value;
 
-                                        // district id store করো
+                                        
                                         handleInputChange("district", districtId);
 
                                         const filtered = allUpazilas.filter(
@@ -295,7 +296,7 @@ export default function SignUpPage() {
 
                                         setFilteredUpazilas(filtered);
 
-                                        // reset upazila
+                                        
                                         handleInputChange("upazila", "");
                                     }}
                                 >
@@ -369,7 +370,7 @@ export default function SignUpPage() {
                         <div>
                             <label className={labelClass}>Password</label>
                             <div className={wrapperClass}>
-                                <FaLock className="text-slate-400 text-base flex-shrink-0" />
+                                <FaLock className="text-slate-400 text-base shrink-0" />
                                 <input
                                     type="password"
                                     placeholder="Enter your password"
@@ -383,7 +384,7 @@ export default function SignUpPage() {
                         <div>
                             <label className={labelClass}>Confirm Password</label>
                             <div className={wrapperClass}>
-                                <FaUndo className="text-slate-400 text-base flex-shrink-0" />
+                                <FaUndo className="text-slate-400 text-base shrink-0" />
                                 <input
                                     type="password"
                                     placeholder="Re-enter your password"
@@ -399,7 +400,7 @@ export default function SignUpPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-14 rounded-2xl bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold shadow-lg hover:shadow-red-200 transition-all duration-300 cursor-pointer disabled:opacity-50 flex items-center justify-center"
+                        className="w-full h-14 rounded-2xl bg-linear-to-r from-red-500 to-red-600 text-white font-semibold shadow-lg hover:shadow-red-200 transition-all duration-300 cursor-pointer disabled:opacity-50 flex items-center justify-center"
                     >
                         {loading ? "Creating Account..." : "Complete Registration"}
                     </button>
