@@ -10,8 +10,9 @@ export default function Home() {
     <div>
       <Banner></Banner>
       <Stats></Stats>
-      <FeaturedSection></FeaturedSection>
       <RecentBloodRequests></RecentBloodRequests>
+      <FeaturedSection></FeaturedSection>
+      
       <ContactUs></ContactUs>
     </div>
   );

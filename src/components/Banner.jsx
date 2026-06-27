@@ -48,15 +48,16 @@ const Banner = () => {
                         <p className="mt-6 text-lg text-default-600 max-w-xl"> Join our growing community of blood donors and help patients receive life-saving support when they need it most. Every donation can save up to three lives.
                         </p>
                         <div className="flex flex-wrap gap-4 mt-8">
-                            <Button
-                                as={Link}
-                                href="/register"
-                                color="danger"
-                                size="lg"
-                                radius="full"
-                            >
-                                Join as Donor
-                            </Button>
+                            <Link href="/auth/signup">
+                                <Button
+                                    color="danger"
+                                    size="lg"
+                                    radius="full"
+                                >
+                                    Join as Donor
+                                </Button>
+                            </Link>
+
                             <Button
                                 as={Link}
                                 href="/search"
@@ -102,7 +103,7 @@ const Banner = () => {
                                 </SwiperSlide>))}
                         </Swiper>
                     </div>
-                    
+
                 </div>
             </div>
         </section>
