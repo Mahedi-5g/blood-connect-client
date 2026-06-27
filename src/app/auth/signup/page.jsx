@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
+import {Label, Radio, RadioGroup } from "@heroui/react";
 import {
     FaUser,
     FaEnvelope,
@@ -62,6 +63,7 @@ export default function SignUpPage() {
     const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [role,setRole] = useState("donor")
 
     const fileInputRef = useRef(null);
     const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
@@ -142,6 +144,7 @@ export default function SignUpPage() {
             email: formData.email,
             password: formData.password,
             name: formData.name,
+            role:role,
             image: imageUrl,
             data: {
                 phone: formData.phone,
@@ -287,7 +290,7 @@ export default function SignUpPage() {
                                     onChange={(e) => {
                                         const districtId = e.target.value;
 
-                                        
+
                                         handleInputChange("district", districtId);
 
                                         const filtered = allUpazilas.filter(
@@ -296,7 +299,7 @@ export default function SignUpPage() {
 
                                         setFilteredUpazilas(filtered);
 
-                                        
+
                                         handleInputChange("upazila", "");
                                     }}
                                 >
@@ -394,6 +397,29 @@ export default function SignUpPage() {
                                 />
                             </div>
                         </div>
+                    </div>
+
+                    {/* role base signup */}
+                    <div className="flex flex-col gap-4">
+                        <Label className={labelClass}>Subscription plan</Label>
+                        <RadioGroup defaultValue="donor" name="role" onChange={value =>setRole(value)} orientation="horizontal">
+                            <Radio value="donor">
+                                <Radio.Content>
+                                    <Radio.Control>
+                                        <Radio.Indicator />
+                                    </Radio.Control>
+                                    Blood Donor
+                                </Radio.Content>
+                            </Radio>
+                            <Radio value="volunteer">
+                                <Radio.Content>
+                                    <Radio.Control>
+                                        <Radio.Indicator />
+                                    </Radio.Control>
+                                    Volunteer
+                                </Radio.Content>
+                            </Radio>
+                        </RadioGroup>
                     </div>
 
                     {/* Core Submission Button */}
