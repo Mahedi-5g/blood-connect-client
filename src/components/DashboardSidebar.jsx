@@ -29,8 +29,8 @@ const DashboardSidebar = () => {
     const getLinkClass = (href) => {
         const isActive = pathname === href;
         return `flex items-center gap-3 rounded-xl px-3 py-2.5 transition font-medium text-sm ${isActive
-            ? "bg-red-500 text-white shadow-md shadow-red-500/20" // অ্যাক্টিভ হলে লাল ব্যাকগ্রাউন্ড ও সাদা টেক্সট
-            : "text-slate-600 hover:bg-red-50 hover:text-red-600" // ইনঅ্যাক্টিভ হলে সাধারণ ডিজাইন
+            ? "bg-red-500 text-white shadow-md shadow-red-500/20" 
+            : "text-slate-600 hover:bg-red-50 hover:text-red-600" 
             }`;
     };
 
@@ -79,8 +79,8 @@ const DashboardSidebar = () => {
                                 <span>My Request</span>
                             </Link>
 
-                            <Link href="/dashboard/create-request" className={`${getLinkClass("/dashboard/create-request")} group`}>
-                                <LuGitPullRequestCreate className={getIconClass("/dashboard/create-request")} />
+                            <Link href="/dashboard/create-donation-request" className={`${getLinkClass("/dashboard/create-donation-request")} group`}>
+                                <LuGitPullRequestCreate className={getIconClass("/dashboard/create-donation-request")} />
                                 <span>Create Request</span>
                             </Link>
                         </div>
