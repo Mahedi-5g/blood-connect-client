@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
-import {Label, Radio, RadioGroup } from "@heroui/react";
+import { Label, Radio, RadioGroup } from "@heroui/react";
 import {
     FaUser,
     FaEnvelope,
@@ -63,7 +63,7 @@ export default function SignUpPage() {
     const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [role,setRole] = useState("donor")
+    const [role, setRole] = useState("donor")
 
     const fileInputRef = useRef(null);
     const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
@@ -144,15 +144,15 @@ export default function SignUpPage() {
             email: formData.email,
             password: formData.password,
             name: formData.name,
-            role:role,
+            role: role,
             image: imageUrl,
-            data: {
-                phone: formData.phone,
-                gender: formData.gender,
-                district: selectedDistrict?.name || "",
-                upazila: formData.upazila,
-                bloodGroup: selectedBlood
-            }
+
+            phone: formData.phone,
+            gender: formData.gender,
+            district: selectedDistrict?.name || "",
+            upazila: formData.upazila,
+            bloodGroup: selectedBlood
+
         });
 
         setLoading(false);
@@ -401,8 +401,8 @@ export default function SignUpPage() {
 
                     {/* role base signup */}
                     <div className="flex flex-col gap-4">
-                        <Label className={labelClass}>Subscription plan</Label>
-                        <RadioGroup defaultValue="donor" name="role" onChange={value =>setRole(value)} orientation="horizontal">
+                        <Label className={labelClass}>What is your role?</Label>
+                        <RadioGroup defaultValue="donor" name="role" onChange={value => setRole(value)} orientation="horizontal">
                             <Radio value="donor">
                                 <Radio.Content>
                                     <Radio.Control>

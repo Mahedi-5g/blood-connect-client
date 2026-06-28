@@ -4,23 +4,22 @@ import { useState, useEffect } from "react";
 import { Button, Avatar } from "@heroui/react";
 import { FaEdit, FaSave, FaTimes, FaMapMarkerAlt, FaRegUser } from "react-icons/fa";
 import { MdOutlineMailLock } from "react-icons/md";
-import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
+import { GiLifeTap } from "react-icons/gi";
+
 
 export default function ProfilePage() {
-    const { data: session } = authClient.useSession();
+    const { data: session } = useSession();
 
-   
+
     const [isEditing, setIsEditing] = useState(false);
 
-   
+    const user = session?.user;
     const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        phone: "+8801XXXXXXXXX",
-        gender: "Male",
-        district: "Bandarban",
-        upazila: "Lama",
-        fullAddress: "Lama, Bandarban, Bangladesh"
+        name: user?.name,
+        district: user?.district,
+        upazila: user?.upazila,
+        phone: user?.phone,
     });
 
     useEffect(() => {
@@ -106,17 +105,21 @@ export default function ProfilePage() {
 
                         {/* Avatar */}
                         <div className="absolute -bottom-10 left-8 z-10 gap-4">
-                            <Avatar
-                                src={session?.user?.image || "/default-avatar.png"}
-                                className="w-22 h-22 border-5 rounded-full border-white shadow-xl"
-                            />
+                            <Avatar className="w-22 h-22 border-5 rounded-full border-white shadow-xl">
+                                <Avatar.Image
+                                    src={user?.image || "/default-avatar.png"}
+                                    alt={user?.name || "User"}
+
+                                />
+                            </Avatar>
+
                         </div>
                         <div className="absolute bottom-0 left-32 z-10 gap-4">
                             <div className="flex flex-wrap  gap-3">
                                 <h2 className="text-3xl font-bold text-white">
-                                    {formData.name}
+                                    {user?.name}
                                 </h2>
-                                <p className="py-1 px-2 rounded-xl bg-blue-50 mb-1 text-green-600 text-sm font-semibold">Active Donor</p>
+                                <p className="py-1 px-2 rounded-xl bg-blue-50 mb-1 text-green-600 text-sm font-semibold">Active {user?.role}</p>
                             </div>
                         </div>
 
@@ -125,7 +128,7 @@ export default function ProfilePage() {
                             <p className="text-[10px] tracking-wider uppercase font-bold text-red-500">
                                 Blood Group
                             </p>
-                            <h2 className="text-3xl font-black text-red-600 mt-0.5">A+</h2>
+                            <h2 className="text-3xl font-black text-red-600 mt-0.5">{user?.bloodGroup}</h2>
                         </div>
                     </div>
 
@@ -135,7 +138,7 @@ export default function ProfilePage() {
 
                             <p className="mt-2 flex items-center gap-1.5 text-sm text-slate-700">
                                 <FaMapMarkerAlt className="text-red-400" />
-                                {formData.upazila}, {formData.district}
+                                {user?.upazila}, {user?.district}
                             </p>
                         </div>
 
@@ -157,7 +160,7 @@ export default function ProfilePage() {
                                             <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">Full Name</label>
                                             <input
                                                 type="text"
-                                                value={formData.name}
+                                                value={user?.name}
                                                 disabled={!isEditing}
                                                 onChange={(e) => handleInputChange("name", e.target.value)}
                                                 className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50/50 disabled:bg-slate-50/80 disabled:text-slate-500 px-4 py-3 outline-none focus:border-red-500 focus:bg-white transition"
@@ -171,8 +174,8 @@ export default function ProfilePage() {
                                             </div>
                                             <input
                                                 type="email"
-                                                value={formData.email}
-                                                disabled={true} 
+                                                value={user?.email}
+                                                disabled={true}
                                                 className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-100 text-slate-400 px-4 py-3 cursor-not-allowed outline-none"
                                             />
                                         </div>
@@ -189,7 +192,7 @@ export default function ProfilePage() {
                                             <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">District</label>
                                             <input
                                                 type="text"
-                                                value={formData.district}
+                                                value={user?.district}
                                                 disabled={!isEditing}
                                                 onChange={(e) => handleInputChange("district", e.target.value)}
                                                 className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50/50 disabled:bg-slate-50/80 disabled:text-slate-500 px-4 py-3 outline-none focus:border-red-500 focus:bg-white transition"
@@ -200,7 +203,7 @@ export default function ProfilePage() {
                                             <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">Upazila</label>
                                             <input
                                                 type="text"
-                                                value={formData.upazila}
+                                                value={user?.upazila}
                                                 disabled={!isEditing}
                                                 onChange={(e) => handleInputChange("upazila", e.target.value)}
                                                 className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50/50 disabled:bg-slate-50/80 disabled:text-slate-500 px-4 py-3 outline-none focus:border-red-500 focus:bg-white transition"
@@ -218,7 +221,7 @@ export default function ProfilePage() {
                                 <div className="bg-white rounded-3xl shadow-xs border p-6">
                                     <div className="flex items-start gap-3 mb-6">
                                         <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-red-500 font-bold">
-                                            🩸
+                                            <GiLifeTap />
                                         </div>
                                         <div>
                                             <h3 className="text-lg font-bold text-slate-800">Medical Profile</h3>
@@ -230,7 +233,7 @@ export default function ProfilePage() {
                                             <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">Blood Group</label>
                                             <input
                                                 type="text"
-                                                value="A+"
+                                                value={user?.bloodGroup}
                                                 disabled={true}
                                                 className="mt-2 w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-2.5 font-bold text-red-600"
                                             />
