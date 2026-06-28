@@ -57,7 +57,7 @@ export default function DashboardHome() {
   return (
     <div className="min-h-screen bg-slate-50/50 p-6 sm:p-10 space-y-10">
       <div className="max-w-7xl mx-auto space-y-10">
-        <div className="bg-linear-to-r from-red-500 to-rose-500 rounded-3xl p-8 text-white shadow-xl">
+        <div className="bg-linear-to-r from-slate-500 to-slate-400 rounded-3xl p-8 text-white shadow-xl">
           <h1 className="text-3xl font-extrabold sm:text-4xl flex text-slate-200">Welcome back, {session?.user?.name}!<PiHandWaving /> </h1>
           <p className="mt-2 text-slate-200 font-medium">Role: Registered Donor | Thank you for being a lifesaver.</p>
         </div>
@@ -73,7 +73,7 @@ export default function DashboardHome() {
             />
 
             <div className="pt-2 flex justify-center">
-              <Link href="/dashboard/my-donation-requests" className="inline-flex items-center justify-center px-6 h-11 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs tracking-wider uppercase rounded-xl transition">
+              <Link href="/dashboard/my-request" className="inline-flex items-center justify-center px-6 h-11 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs tracking-wider uppercase rounded-xl transition">
                 View My All Requests
               </Link>
             </div>

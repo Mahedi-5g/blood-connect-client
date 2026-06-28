@@ -16,12 +16,12 @@ function Navbar() {
     const guestLinks = [
         { name: "Home", href: "/" },
         { name: "Donation Request", href: "/donationRequest" },
-        { name: "Search Donor", href: "/searchDonor" },
+        { name: "Search Donor", href: "/search-donor" },
     ];
 
     const userLinks = [
         { name: "Donation Request", href: "/donationRequest" },
-        { name: "Search Donor", href: "/searchDonor" },
+        { name: "Search Donor", href: "/search-donor" },
         { name: "Funding", href: "/funding" },
     ];
     if (pathname.startsWith("/dashboard")) {

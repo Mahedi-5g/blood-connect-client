@@ -85,7 +85,7 @@ export default function CreateDonationRequest() {
         throw new Error(errData.message || "Failed to create request");
       }
 
-      toast.success("Blood donation request created successfully! 🩸");
+      toast.success("Blood donation request created successfully!");
       router.push("/dashboard");
     } catch (error) {
       console.error(error);
