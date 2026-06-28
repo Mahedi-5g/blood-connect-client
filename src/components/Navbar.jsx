@@ -86,7 +86,13 @@ function Navbar() {
                 <ul className="hidden items-center gap-6 md:flex">
                     {(session?.user ? userLinks : guestLinks).map((item) => (
                         <li key={item.href}>
-                            <Link href={item.href}>{item.name}</Link>
+                            <Link href={item.href}
+                                className={`font-semibold transition-colors ${pathname === item.href
+                                    ? "text-red-500"
+                                    : "text-gray-700 hover:text-red-500"
+                                    }`}>
+                                {item.name}
+                            </Link>
                         </li>
                     ))}
                 </ul>

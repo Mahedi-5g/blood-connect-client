@@ -2,6 +2,7 @@ import { Poppins, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Toaster } from "react-hot-toast";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -27,7 +28,10 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col font-sans antialiased bg-background text-foreground">
         <Navbar />
-        <main>{children}</main>
+        <main>
+          {children}
+          <Toaster position="top-right" reverseOrder={false} />
+          </main>
         <Footer></Footer>
       </body>
     </html>

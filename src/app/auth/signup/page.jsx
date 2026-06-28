@@ -17,6 +17,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { IoIosWarning } from "react-icons/io";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 const labelClass = "text-[#334155] font-bold text-sm mb-2 tracking-tight block";
@@ -25,6 +26,9 @@ const inputClass = "text-slate-800 text-sm font-medium placeholder:text-slate-40
 const selectClass = "w-full h-14 bg-white border border-slate-200 focus:border-red-400 focus:ring-[4px] focus:ring-red-500/10 rounded-xl transition-all duration-200 flex items-center px-4 gap-3 appearance-none cursor-pointer text-slate-800 text-sm font-medium outline-none";
 
 export default function SignUpPage() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
     const [districts, setDistricts] = useState([]);
     const [allUpazilas, setAllUpazilas] = useState([]);
     const [filteredUpazilas, setFilteredUpazilas] = useState([]);
@@ -160,7 +164,9 @@ export default function SignUpPage() {
         if (authError) {
             setError(authError.message || "Registration failed. Please try again.");
         } else {
-            window.location.href = "/dashboard";
+            const redirect = searchParams.get("redirect");
+
+            router.replace(redirect || "/dashboard");
         }
     };
 

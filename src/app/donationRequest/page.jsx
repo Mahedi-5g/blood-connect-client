@@ -1,14 +1,27 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { Button } from "@heroui/react";
 import { MapPin, Calendar } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function DonationRequestsPage() {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [visibleCount, setVisibleCount] = useState(7);
+
+    const router = useRouter();
+    const { data: session } = authClient.useSession();
+
+    const handleViewDetails = (id) => {
+        if (!session?.user) {
+            router.push(`/auth/signup?redirect=/donationRequest/${id}`);
+            return;
+        }
+
+        router.push(`/donationRequest/${id}`);
+    };
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -113,14 +126,13 @@ export default function DonationRequestsPage() {
                                     </div>
                                 </div>
 
-                                <Link href={`/donationRequest/${request._id}`}>
-                                    <Button
-                                        className="w-full mt-8 bg-[#e65100] text-white font-bold text-sm h-12 rounded-2xl shadow-[0_6px_20px_rgba(230,81,0,0.3)] hover:bg-[#d84315]"
-                                        endContent={<span className="text-lg font-light">→</span>}
-                                    >
-                                        View Details
-                                    </Button>
-                                </Link>
+                                <Button
+                                    onPress={() => handleViewDetails(request._id)}
+                                    className="w-full mt-8 bg-[#e65100] text-white font-bold text-sm h-12 rounded-2xl shadow-[0_6px_20px_rgba(230,81,0,0.3)] hover:bg-[#d84315]"
+                                    endContent={<span className="text-lg font-light">→</span>}
+                                >
+                                    View Details
+                                </Button>
                             </div>
                         </div>
                     ))}
