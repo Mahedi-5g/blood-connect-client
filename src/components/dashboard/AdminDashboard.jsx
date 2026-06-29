@@ -34,7 +34,7 @@ export default function AdminVolunteerDashboard() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    
+
                     {/* কার্ড ১: Total Donors */}
                     <Card className="border-none shadow-sm bg-white rounded-2xl hover:scale-[1.02] transition-transform p-6">
                         <div className="flex items-center gap-5">
@@ -58,7 +58,15 @@ export default function AdminVolunteerDashboard() {
                     </Card>
 
                     {/* কার্ড ৩: Blood Requests */}
-                   
+                    <Card className="border-none shadow-sm bg-white rounded-2xl hover:scale-[1.02] transition-transform p-6">
+                        <div className="flex items-center gap-5">
+                            <div className="p-4 bg-red-50 text-red-600 rounded-2xl text-3xl"><BiDonateBlood /></div>
+                            <div>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Blood Requests</p>
+                                <h3 className="text-3xl font-black text-slate-800 mt-1">{stats.totalRequests.toLocaleString()}</h3>
+                            </div>
+                        </div>
+                    </Card>
 
                 </div>
             )}
