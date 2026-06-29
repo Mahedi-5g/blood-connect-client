@@ -2,14 +2,13 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Search, Droplet, MapPin, Mail, Phone, User, Inbox } from "lucide-react";
+import { Search, Droplet, MapPin, Mail, Inbox } from "lucide-react";
 
 export default function SearchDonorsPage() {
   const [donors, setDonors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
-  // সার্চ ফর্ম স্টেট
   const [searchParams, setSearchParams] = useState({
     bloodGroup: "",
     district: "",
@@ -28,7 +27,6 @@ export default function SearchDonorsPage() {
 
     try {
       const { bloodGroup, district, upazila } = searchParams;
-      // কোয়েরি প্যারামিটারসহ ব্যাকএন্ডে রিকোয়েস্ট পাঠানো হচ্ছে
       const res = await fetch(
         `http://localhost:5000/search-donors?bloodGroup=${encodeURIComponent(bloodGroup)}&district=${district}&upazila=${upazila}`
       );
@@ -49,10 +47,10 @@ export default function SearchDonorsPage() {
     <div className="min-h-screen bg-slate-50/50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-10">
         
-        {/* Title Section */}
+
         <div className="text-center max-w-xl mx-auto space-y-3">
           <h1 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
-            Find Available <span className="text-red-600">Blood Donors</span> 🩸
+            Find Available <span className="text-red-600">Blood Donors</span> 
           </h1>
           <p className="text-sm text-slate-500 leading-relaxed">
             Search for life-saving donors near your location by selecting the blood group, district, and upazila.
@@ -137,7 +135,6 @@ export default function SearchDonorsPage() {
         {/* 📊 Donors List Result Section */}
         <div className="pt-4">
           {!hasSearched ? (
-            // ১. ডিফল্ট ভিউ (সার্চ করার আগে)
             <div className="text-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl max-w-lg mx-auto">
               <Search className="w-8 h-8 text-slate-300 mx-auto mb-3" />
               <p className="text-sm text-slate-400 font-medium">
@@ -145,12 +142,10 @@ export default function SearchDonorsPage() {
               </p>
             </div>
           ) : loading ? (
-            // ২. লোডিং স্টেট
             <div className="text-center py-12 font-bold text-slate-600">
               Searching for potential lifesavers...
             </div>
           ) : donors.length === 0 ? (
-            // ৩. নো ডাটা ফাউন্ড স্টেট
             <div className="text-center p-12 bg-white border border-slate-100 rounded-3xl max-w-lg mx-auto shadow-sm space-y-2">
               <Inbox className="w-10 h-10 text-slate-300 mx-auto" />
               <h3 className="text-base font-bold text-slate-800">No Donors Found</h3>
@@ -159,7 +154,6 @@ export default function SearchDonorsPage() {
               </p>
             </div>
           ) : (
-            // ৪. ডোনর কার্ড লিস্ট গ্রিড
             <div className="space-y-6">
               <h2 className="text-lg font-bold text-slate-800 px-2">
                 Found {donors.length} Matching {donors.length === 1 ? "Donor" : "Donors"}

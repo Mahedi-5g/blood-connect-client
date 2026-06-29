@@ -1,15 +1,150 @@
-"use client"
-import React from 'react';
+// "use client"
+// import React from 'react';
 
+// import Link from "next/link";
+// import { usePathname, useRouter } from "next/navigation";
+
+// import { authClient } from "@/lib/auth-client";
+
+// import {
+//     ArrowRightFromSquare,
+//     House,
+//     Person,
+// } from "@gravity-ui/icons";
+
+// import {
+//     Avatar,
+//     Button,
+// } from "@heroui/react";
+// import { BiDonateBlood } from "react-icons/bi";
+// import { LuGitPullRequestCreate } from "react-icons/lu";
+// import { MdOutlineDashboard } from 'react-icons/md';
+
+
+// const DashboardSidebar = () => {
+//     const router = useRouter();
+//     const { data: session } = authClient.useSession();
+//     const pathname = usePathname();
+
+//     const getLinkClass = (href) => {
+//         const isActive = pathname === href;
+//         return `flex items-center gap-3 rounded-xl px-3 py-2.5 transition font-medium text-sm ${isActive
+//             ? "bg-red-500 text-white shadow-md shadow-red-500/20" 
+//             : "text-slate-600 hover:bg-red-50 hover:text-red-600" 
+//             }`;
+//     };
+
+//     const getIconClass = (href) => {
+//         return `size-5 ${pathname === href ? "text-white" : "text-slate-500 group-hover:text-red-600"}`;
+//     };
+//     return (
+//         <div>
+//             <aside className="w-64 bg-white border-r shadow-sm flex flex-col justify-between h-screen">
+//                 <div>
+//                     <Link href="/" className={`${getLinkClass("/")} group`}>
+//                         <House className={getIconClass("/")} />
+//                         <span>Home</span>
+//                     </Link>
+//                 </div>
+
+//                 <div className="p-5 pt-2">
+//                     {/* Main Menu */}
+//                     <div className="mb-8">
+//                         <p className="text-xs tracking-[5px] text-slate-400 mb-4 font-bold">
+//                             MAIN MENU
+//                         </p>
+
+//                         <div className="space-y-1.5">
+//                             <Link href="/dashboard" className={`${getLinkClass("/dashboard")} group`}>
+//                                 <MdOutlineDashboard className={getIconClass("/dashboard")} />
+//                                 <span>Dashboard</span>
+//                             </Link>
+
+//                             <Link href="/dashboard/profile" className={`${getLinkClass("/dashboard/profile")} group`}>
+//                                 <Person className={getIconClass("/dashboard/profile")} />
+//                                 <span>My Profile</span>
+//                             </Link>
+//                         </div>
+//                     </div>
+
+//                     {/* Donation */}
+//                     <div>
+//                         <p className="text-xs tracking-[5px] text-slate-400 mb-4 font-bold">
+//                             DONATIONS
+//                         </p>
+
+//                         <div className="space-y-1.5">
+//                             <Link href="/dashboard/my-request" className={`${getLinkClass("/dashboard/my-request")} group`}>
+//                                 <BiDonateBlood className={getIconClass("/dashboard/my-request")} />
+//                                 <span>My Request</span>
+//                             </Link>
+
+//                             <Link href="/dashboard/create-donation-request" className={`${getLinkClass("/dashboard/create-donation-request")} group`}>
+//                                 <LuGitPullRequestCreate className={getIconClass("/dashboard/create-donation-request")} />
+//                                 <span>Create Request</span>
+//                             </Link>
+//                         </div>
+//                     </div>
+//                 </div>
+
+//                 {/* Bottom Profile & Logout */}
+//                 <div className="border-t p-5 bg-slate-50/50">
+//                     <div className="flex items-center gap-3 mb-5">
+//                         <Avatar size="sm" isBordered color="danger">
+//                             <Avatar.Image
+//                                 src={session?.user?.image || "/default-avatar.png"}
+//                                 alt={session?.user?.name || "User"}
+//                             />
+//                             <Avatar.Fallback>
+//                                 {session?.user?.name?.charAt(0).toUpperCase() || "U"}
+//                             </Avatar.Fallback>
+//                         </Avatar>
+
+//                         <div className="overflow-hidden">
+//                             <p className="font-semibold text-sm text-slate-800 truncate">
+//                                 {session?.user?.name || "Loading..."}
+//                             </p>
+//                             <p className="text-xs text-gray-500 truncate">
+//                                 {session?.user?.email}
+//                             </p>
+//                         </div>
+//                     </div>
+
+//                     <Button
+//                         color="danger"
+//                         variant="flat"
+//                         className="w-full text-red-600 bg-red-50 hover:bg-red-100 font-semibold"
+//                         onPress={async () => {
+//                             await authClient.signOut();
+//                             router.push("/");
+//                         }}
+//                     >
+//                         <ArrowRightFromSquare className="size-4" />
+//                         Logout
+//                     </Button>
+//                 </div>
+//             </aside>
+//         </div>
+//     );
+// };
+
+// export default DashboardSidebar;
+
+
+
+
+
+"use client";
+import React from 'react';
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-
 import { authClient } from "@/lib/auth-client";
 
 import {
     ArrowRightFromSquare,
     House,
     Person,
+    Persons, // অ্যাডমিনের জন্য আইকন
 } from "@gravity-ui/icons";
 
 import {
@@ -18,71 +153,98 @@ import {
 } from "@heroui/react";
 import { BiDonateBlood } from "react-icons/bi";
 import { LuGitPullRequestCreate } from "react-icons/lu";
-import { MdOutlineDashboard } from 'react-icons/md';
-
+import { MdOutlineDashboard, MdOutlinePlaylistPlay } from 'react-icons/md';
 
 const DashboardSidebar = () => {
     const router = useRouter();
     const { data: session } = authClient.useSession();
     const pathname = usePathname();
 
+    // ইউজারের রোল বের করা (ডিফল্ট হিসেবে donor ধরা হয়েছে যদি না থাকে)
+    const userRole = session?.user?.role?.toLowerCase() || "donor";
+
     const getLinkClass = (href) => {
         const isActive = pathname === href;
         return `flex items-center gap-3 rounded-xl px-3 py-2.5 transition font-medium text-sm ${isActive
-            ? "bg-red-500 text-white shadow-md shadow-red-500/20" 
-            : "text-slate-600 hover:bg-red-50 hover:text-red-600" 
+            ? "bg-red-500 text-white shadow-md shadow-red-500/20"
+            : "text-slate-600 hover:bg-red-50 hover:text-red-600"
             }`;
     };
 
     const getIconClass = (href) => {
         return `size-5 ${pathname === href ? "text-white" : "text-slate-500 group-hover:text-red-600"}`;
     };
+
     return (
         <div>
             <aside className="w-64 bg-white border-r shadow-sm flex flex-col justify-between h-screen">
-                <div>
-                    <Link href="/" className={`${getLinkClass("/")} group`}>
-                        <House className={getIconClass("/")} />
-                        <span>Home</span>
-                    </Link>
-                </div>
-
-                <div className="p-5 pt-2">
-                    {/* Main Menu */}
-                    <div className="mb-8">
-                        <p className="text-xs tracking-[5px] text-slate-400 mb-4 font-bold">
-                            MAIN MENU
-                        </p>
-
-                        <div className="space-y-1.5">
-                            <Link href="/dashboard" className={`${getLinkClass("/dashboard")} group`}>
-                                <MdOutlineDashboard className={getIconClass("/dashboard")} />
-                                <span>Dashboard</span>
-                            </Link>
-
-                            <Link href="/dashboard/profile" className={`${getLinkClass("/dashboard/profile")} group`}>
-                                <Person className={getIconClass("/dashboard/profile")} />
-                                <span>My Profile</span>
-                            </Link>
-                        </div>
+                <div className="flex flex-col flex-1 overflow-y-auto">
+                    {/* Top Home Button */}
+                    <div className="p-5 pb-2">
+                        <Link href="/" className={`${getLinkClass("/")} group`}>
+                            <House className={getIconClass("/")} />
+                            <span>Home</span>
+                        </Link>
                     </div>
 
-                    {/* Donation */}
-                    <div>
-                        <p className="text-xs tracking-[5px] text-slate-400 mb-4 font-bold">
-                            DONATIONS
-                        </p>
+                    <div className="p-5 pt-2">
+                        {/* Main Menu Section */}
+                        <div className="mb-8">
+                            <p className="text-xs tracking-[5px] text-slate-400 mb-4 font-bold">
+                                MAIN MENU
+                            </p>
 
-                        <div className="space-y-1.5">
-                            <Link href="/dashboard/my-request" className={`${getLinkClass("/dashboard/my-request")} group`}>
-                                <BiDonateBlood className={getIconClass("/dashboard/my-request")} />
-                                <span>My Request</span>
-                            </Link>
+                            <div className="space-y-1.5">
+                                <Link href="/dashboard" className={`${getLinkClass("/dashboard")} group`}>
+                                    <MdOutlineDashboard className={getIconClass("/dashboard")} />
+                                    <span>Dashboard</span>
+                                </Link>
 
-                            <Link href="/dashboard/create-donation-request" className={`${getLinkClass("/dashboard/create-donation-request")} group`}>
-                                <LuGitPullRequestCreate className={getIconClass("/dashboard/create-donation-request")} />
-                                <span>Create Request</span>
-                            </Link>
+                                <Link href="/dashboard/profile" className={`${getLinkClass("/dashboard/profile")} group`}>
+                                    <Person className={getIconClass("/dashboard/profile")} />
+                                    <span>My Profile</span>
+                                </Link>
+
+                                {/* 👑 শুধুমাত্র ADMIN দের জন্য All Users অপশন */}
+                                {userRole === "admin" && (
+                                    <Link href="/dashboard/all-users" className={`${getLinkClass("/dashboard/all-users")} group`}>
+                                        <Persons className={getIconClass("/dashboard/all-users")} />
+                                        <span>All Users</span>
+                                    </Link>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Donations Section - রোলের ওপর ভিত্তি করে পরিবর্তন */}
+                        <div>
+                            <p className="text-xs tracking-[5px] text-slate-400 mb-4 font-bold">
+                                DONATIONS
+                            </p>
+
+                            <div className="space-y-1.5">
+                                {/* 🩸 কেস ১: শুধুমাত্র DONOR দের জন্য মেনু */}
+                                {userRole === "donor" && (
+                                    <>
+                                        <Link href="/dashboard/my-request" className={`${getLinkClass("/dashboard/my-request")} group`}>
+                                            <BiDonateBlood className={getIconClass("/dashboard/my-request")} />
+                                            <span>My Request</span>
+                                        </Link>
+
+                                        <Link href="/dashboard/create-donation-request" className={`${getLinkClass("/dashboard/create-donation-request")} group`}>
+                                            <LuGitPullRequestCreate className={getIconClass("/dashboard/create-donation-request")} />
+                                            <span>Create Request</span>
+                                        </Link>
+                                    </>
+                                )}
+
+                                {/* 🤝 কেস ২: VOLUNTEER এবং ADMIN উভয়ের জন্য মেনু */}
+                                {(userRole === "volunteer" || userRole === "admin") && (
+                                    <Link href="/dashboard/all-donation-requests" className={`${getLinkClass("/dashboard/all-donation-requests")} group`}>
+                                        <MdOutlinePlaylistPlay className={getIconClass("/dashboard/all-donation-requests")} />
+                                        <span>All Requests</span>
+                                    </Link>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,20 +252,23 @@ const DashboardSidebar = () => {
                 {/* Bottom Profile & Logout */}
                 <div className="border-t p-5 bg-slate-50/50">
                     <div className="flex items-center gap-3 mb-5">
-                        <Avatar size="sm" isBordered color="danger">
-                            <Avatar.Image
-                                src={session?.user?.image || "/default-avatar.png"}
-                                alt={session?.user?.name || "User"}
-                            />
-                            <Avatar.Fallback>
-                                {session?.user?.name?.charAt(0).toUpperCase() || "U"}
-                            </Avatar.Fallback>
-                        </Avatar>
+                        {/* 🎯 HTML Dom error ও 404 এরর ফিক্স করা Avatar */}
+                        <Avatar
+                            src={session?.user?.image || null}
+                            name={session?.user?.name || "U"}
+                            color="danger"
+                            className="w-10 h-10 border-2 border-red-200"
+                        />
 
                         <div className="overflow-hidden">
-                            <p className="font-semibold text-sm text-slate-800 truncate">
-                                {session?.user?.name || "Loading..."}
-                            </p>
+                            <div className="flex items-center gap-1.5">
+                                <p className="font-semibold text-sm text-slate-800 truncate max-w-[100px]">
+                                    {session?.user?.name || "User"}
+                                </p>
+                                <span className="text-[10px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded uppercase">
+                                    {userRole}
+                                </span>
+                            </div>
                             <p className="text-xs text-gray-500 truncate">
                                 {session?.user?.email}
                             </p>
