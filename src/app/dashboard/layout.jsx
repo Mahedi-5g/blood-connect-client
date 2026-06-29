@@ -1,13 +1,19 @@
-import DashboardSidebar from "@/components/DashboardSidebar";
+'use client'; // এটি অবশ্যই দিতে হবে যেহেতু প্রোভাইডার ক্লায়েন্ট সাইড স্টেট মেইনটেইন করে
+
+import DashboardSidebar from '@/components/DashboardSidebar';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState } from 'react';
 
 export default function DashboardLayout({ children }) {
-  return (
-    <div className="flex min-h-screen">
-      <DashboardSidebar />
+  const [queryClient] = useState(() => new QueryClient());
 
-      <main className="flex-1 bg-gray-50 p-6">
-        {children}
-      </main>
-    </div>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <div className="dashboard-layout">
+        <DashboardSidebar />
+        <main className="p-4">{children}</main>
+      </div>
+    </QueryClientProvider>
   );
 }
+
