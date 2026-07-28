@@ -1,13 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Search, Droplet, MapPin, Mail, Inbox } from "lucide-react";
+import { Avatar } from "@heroui/react";
 
 export default function SearchDonorsPage() {
   const [donors, setDonors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+
+  const [districts, setDistricts] = useState([]);
+  const [allUpazilas, setAllUpazilas] = useState([]);
+  const [filteredUpazilas, setFilteredUpazilas] = useState([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const districtRes = await fetch("/data/districts.json");
+      const districtJson = await districtRes.json();
+
+      const upazilaRes = await fetch("/data/upazilas.json");
+      const upazilaJson = await upazilaRes.json();
+
+      const districtData = districtJson[2].data;
+      const upazilaData = upazilaJson[2].data;
+
+      setDistricts(districtData);
+      setAllUpazilas(upazilaData);
+    };
+
+    loadData();
+  }, []);
+
 
   const [searchParams, setSearchParams] = useState({
     bloodGroup: "",
@@ -22,35 +46,43 @@ export default function SearchDonorsPage() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
+
     setLoading(true);
     setHasSearched(true);
 
     try {
       const { bloodGroup, district, upazila } = searchParams;
+
       const res = await fetch(
-        `http://localhost:5000/search-donors?bloodGroup=${encodeURIComponent(bloodGroup)}&district=${district}&upazila=${upazila}`
+        `${process.env.NEXT_PUBLIC_API_URL}/search-donors?bloodGroup=${encodeURIComponent(
+          bloodGroup
+        )}&district=${encodeURIComponent(
+          district
+        )}&upazila=${encodeURIComponent(upazila)}`
       );
 
-      if (!res.ok) throw new Error("Failed to fetch donors data");
+      if (!res.ok) {
+        throw new Error("Failed to fetch donors");
+      }
 
       const data = await res.json();
+
       setDonors(data);
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong while searching donors");
+      toast.error("Something went wrong while searching donors.");
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-slate-50/50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-10">
-        
+
 
         <div className="text-center max-w-xl mx-auto space-y-3">
           <h1 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
-            Find Available <span className="text-red-600">Blood Donors</span> 
+            Find Available <span className="text-red-600">Blood Donors</span>
           </h1>
           <p className="text-sm text-slate-500 leading-relaxed">
             Search for life-saving donors near your location by selecting the blood group, district, and upazila.
@@ -60,7 +92,7 @@ export default function SearchDonorsPage() {
         {/* 🔍 Search Form Card */}
         <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-100 max-w-4xl mx-auto">
           <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-            
+
             {/* Blood Group */}
             <div>
               <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1">
@@ -89,13 +121,38 @@ export default function SearchDonorsPage() {
                 name="district"
                 required
                 value={searchParams.district}
-                onChange={handleChange}
-                className="w-full h-12 px-4 border border-slate-200 focus:border-red-500 rounded-xl text-slate-800 text-sm font-medium outline-none bg-white transition"
+                onChange={(e) => {
+                  const districtName = e.target.value;
+
+                  // Update district
+                  setSearchParams((prev) => ({
+                    ...prev,
+                    district: districtName,
+                    upazila: "",
+                  }));
+
+                  // Find selected district object
+                  const selectedDistrict = districts.find(
+                    (d) => d.name === districtName
+                  );
+
+                  // Filter upazilas by district_id
+                  const filtered = allUpazilas.filter(
+                    (u) =>
+                      String(u.district_id) === String(selectedDistrict?.id)
+                  );
+
+                  setFilteredUpazilas(filtered);
+                }}
+                className="w-full h-12 px-4 border border-slate-200 focus:border-red-500 rounded-xl text-slate-800 text-sm font-bold outline-none bg-white transition"
               >
                 <option value="">Select District</option>
-                <option value="Dhaka">Dhaka</option>
-                <option value="Chittagong">Chittagong</option>
-                <option value="Sylhet">Sylhet</option>
+
+                {districts.map((district) => (
+                  <option key={district.id} value={district.name}>
+                    {district.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -108,13 +165,21 @@ export default function SearchDonorsPage() {
                 name="upazila"
                 required
                 value={searchParams.upazila}
-                onChange={handleChange}
-                className="w-full h-12 px-4 border border-slate-200 focus:border-red-500 rounded-xl text-slate-800 text-sm font-medium outline-none bg-white transition"
+                onChange={(e) =>
+                  setSearchParams((prev) => ({
+                    ...prev,
+                    upazila: e.target.value,
+                  }))
+                }
+                className="w-full h-12 px-4 border border-slate-200 focus:border-red-500 rounded-xl text-slate-800 text-sm font-bold outline-none bg-white transition"
               >
                 <option value="">Select Upazila</option>
-                <option value="Mirpur">Mirpur</option>
-                <option value="Dhanmondi">Dhanmondi</option>
-                <option value="Hathazari">Hathazari</option>
+
+                {filteredUpazilas.map((upazila) => (
+                  <option key={upazila.id} value={upazila.name}>
+                    {upazila.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -172,9 +237,11 @@ export default function SearchDonorsPage() {
                     <div className="space-y-4">
                       {/* Name & Avatar Placeholder */}
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600 font-bold uppercase">
-                          {donor.name?.substring(0, 2)}
-                        </div>
+                        <Avatar
+                          src={donor.image}
+                          name={donor.name}
+                          className="w-10 h-10"
+                        />
                         <div>
                           <h3 className="font-bold text-slate-900 flex items-center gap-1.5">
                             {donor.name}

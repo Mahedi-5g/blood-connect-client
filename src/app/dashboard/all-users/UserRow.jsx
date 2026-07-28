@@ -2,14 +2,17 @@ import React from 'react';
 import ActionDropdown from './ActionDropdown';
 import Image from 'next/image';
 
+
 const UserRow = ({ user, index, refetch }) => {
     return (
         <tr className="border-b border-gray-200 hover:bg-gray-50">
             <td className="px-6 py-4 text-sm text-gray-500">{index + 1}</td>
             <td className="px-6 py-4">
-                <img
+                <Image
                     src={user.image || "https://via.placeholder.com/150"}
                     alt={user.name}
+                    height={40}
+                    width={40}
                     className="w-10 h-10 rounded-full object-cover border"
                 />
             </td>

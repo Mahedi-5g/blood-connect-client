@@ -1,9 +1,55 @@
 "use client";
 
+import { useEffect, useState } from 'react';
 import { FaMapMarkerAlt, FaRegUser } from 'react-icons/fa';
 import { MdOutlineMailLock } from 'react-icons/md';
 
 const PersonalInfoSection = ({ formData, isEditing, handleInputChange, user }) => {
+
+    const [districts, setDistricts] = useState([]);
+    const [allUpazilas, setAllUpazilas] = useState([]);
+    const [filteredUpazilas, setFilteredUpazilas] = useState([]);
+    const [selectedDistrictId, setSelectedDistrictId] = useState("");
+
+    useEffect(() => {
+        const loadData = async () => {
+            const districtRes = await fetch("/data/districts.json");
+            const districtJson = await districtRes.json();
+
+            const upazilaRes = await fetch("/data/upazilas.json");
+            const upazilaJson = await upazilaRes.json();
+
+            const districtData = districtJson[2].data;
+            const upazilaData = upazilaJson[2].data;
+
+            setDistricts(districtData);
+            setAllUpazilas(upazilaData);
+
+            const currentDistrictName = formData?.district || user?.district;
+
+            if (currentDistrictName) {
+                const matchedDistrict = districtData.find(
+                    (d) => String(d.name).toLowerCase() === String(currentDistrictName).toLowerCase()
+                );
+
+                if (matchedDistrict) {
+                    const distId = String(matchedDistrict.id);
+                    setSelectedDistrictId(distId);
+
+                    const initialUpazilas = upazilaData.filter(
+                        (u) => String(u.district_id) === distId
+                    );
+                    setFilteredUpazilas(initialUpazilas);
+                }
+            }
+
+        };
+
+
+
+        loadData();
+    }, [user, formData?.district]);
+
     return (
         <div className="lg:col-span-2 space-y-6">
             <div className="bg-white rounded-3xl shadow-xs border p-5 md:p-8 space-y-6">
@@ -44,37 +90,63 @@ const PersonalInfoSection = ({ formData, isEditing, handleInputChange, user }) =
                     <h3 className="text-lg font-bold text-slate-800">Address Details</h3>
                 </div>
 
-                {/* Location Input Fix with Select Dropdown */}
+             
                 <div className="grid md:grid-cols-2 gap-5">
                     <div>
                         <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">District</label>
                         <select
                             disabled={!isEditing}
-                            value={formData.district}
-                            required
-                            onChange={(e) => handleInputChange("district", e.target.value)}
-                            className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50/50 disabled:bg-slate-50/80 disabled:text-slate-500 px-4 py-3 outline-none focus:border-red-500 focus:bg-white transition text-sm font-medium"
+                            value={selectedDistrictId}
+                            className="w-full h-14 pl-11 pr-10 border border-slate-200 rounded-xl"
+                            onChange={(e) => {
+                                const districtId = e.target.value;
+                                setSelectedDistrictId(districtId);
+
+                                const selectedDistrict = districts.find(
+                                    (d) => String(d.id) === districtId
+                                );
+
+                                handleInputChange("district", selectedDistrict?.name || "");
+
+                                const filtered = allUpazilas.filter(
+                                    (u) => String(u.district_id) === String(districtId)
+                                );
+                                setFilteredUpazilas(filtered);
+                                handleInputChange("upazila", "");
+                            }}
                         >
                             <option value="">Select District</option>
-                            <option value="Dhaka">Dhaka</option>
-                            <option value="Chittagong">Chittagong</option>
-                            <option value="Sylhet">Sylhet</option>
+
+                            {districts.map((district) => (
+                                <option key={district.id} value={district.id}>
+                                    {district.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
 
                     <div>
-                        <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">Upazila</label>
+                        <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">
+                            Upazila
+                        </label>
                         <select
                             disabled={!isEditing}
-                            value={formData.upazila}
-                            required
+                            value={formData.upazila || ""}
+                            className="w-full h-14 pl-11 pr-10 border border-slate-200 rounded-xl"
                             onChange={(e) => handleInputChange("upazila", e.target.value)}
-                            className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50/50 disabled:bg-slate-50/80 disabled:text-slate-500 px-4 py-3 outline-none focus:border-red-500 focus:bg-white transition text-sm font-medium"
                         >
                             <option value="">Select Upazila</option>
-                            <option value="Mirpur">Mirpur</option>
-                            <option value="Dhanmondi">Dhanmondi</option>
-                            <option value="Hathazari">Hathazari</option>
+
+                            {formData.upazila &&
+                                !filteredUpazilas.some((u) => u.name === formData.upazila) && (
+                                    <option value={formData.upazila}>{formData.upazila}</option>
+                                )}
+
+                            {filteredUpazilas.map((upazila) => (
+                                <option key={upazila.id} value={upazila.name}>
+                                    {upazila.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>

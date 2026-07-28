@@ -295,17 +295,12 @@ export default function SignUpPage() {
                                     className="w-full h-14 pl-11 pr-10 border border-slate-200 rounded-xl"
                                     onChange={(e) => {
                                         const districtId = e.target.value;
-
-
                                         handleInputChange("district", districtId);
 
                                         const filtered = allUpazilas.filter(
                                             (u) => String(u.district_id) === String(districtId)
                                         );
-
                                         setFilteredUpazilas(filtered);
-
-
                                         handleInputChange("upazila", "");
                                     }}
                                 >
@@ -317,9 +312,6 @@ export default function SignUpPage() {
                                         </option>
                                     ))}
                                 </select>
-                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none">
-                                    <FaChevronDown />
-                                </span>
                             </div>
                         </div>
 
@@ -347,9 +339,6 @@ export default function SignUpPage() {
                                         </option>
                                     ))}
                                 </select>
-                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none">
-                                    <FaChevronDown />
-                                </span>
                             </div>
                         </div>
                     </div>

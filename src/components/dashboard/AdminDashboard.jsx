@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Card, Spinner } from "@heroui/react"; // 🎯 CardBody বাদ দেওয়া হয়েছে
+import { Card, Spinner } from "@heroui/react"; 
 import { FiUsers, FiDollarSign } from "react-icons/fi";
 import { BiDonateBlood } from "react-icons/bi";
 
@@ -35,7 +35,7 @@ export default function AdminVolunteerDashboard() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                    {/* কার্ড ১: Total Donors */}
+                    {/* Total Donors */}
                     <Card className="border-none shadow-sm bg-white rounded-2xl hover:scale-[1.02] transition-transform p-6">
                         <div className="flex items-center gap-5">
                             <div className="p-4 bg-blue-50 text-blue-600 rounded-2xl text-3xl"><FiUsers /></div>
@@ -46,7 +46,7 @@ export default function AdminVolunteerDashboard() {
                         </div>
                     </Card>
 
-                    {/* কার্ড ২: Total Funding */}
+                    {/*  Total Funding */}
                     <Card className="border-none shadow-sm bg-white rounded-2xl hover:scale-[1.02] transition-transform p-6">
                         <div className="flex items-center gap-5">
                             <div className="p-4 bg-amber-50 text-amber-600 rounded-2xl text-3xl"><FiDollarSign /></div>
@@ -57,7 +57,7 @@ export default function AdminVolunteerDashboard() {
                         </div>
                     </Card>
 
-                    {/* কার্ড ৩: Blood Requests */}
+                    {/* Blood Requests */}
                     <Card className="border-none shadow-sm bg-white rounded-2xl hover:scale-[1.02] transition-transform p-6">
                         <div className="flex items-center gap-5">
                             <div className="p-4 bg-red-50 text-red-600 rounded-2xl text-3xl"><BiDonateBlood /></div>

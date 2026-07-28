@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // টোস্ট এবং কনফার্মেশনের জন্য
+import Swal from 'sweetalert2'; 
 
 const ActionDropdown = ({ user, refetch }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    // অ্যাকশন হ্যান্ডলার ফাংশন
+   
     const handleAction = async (url, body, successMessage) => {
         setIsOpen(false);
         
-        // কনফার্মেশন অ্যালার্ট
+
         const confirm = await Swal.fire({
             title: 'Are you sure?',
             text: `Do you want to proceed with this action?`,
@@ -28,7 +28,7 @@ const ActionDropdown = ({ user, refetch }) => {
             const res = await axios.patch(`http://localhost:5000${url}`, body);
             if (res.data.modifiedCount > 0) {
                 Swal.fire('Success!', successMessage, 'success');
-                refetch(); // ডাটা রিফেচ করা হচ্ছে
+                refetch(); 
             }
         } catch (error) {
             Swal.fire('Error!', 'Something went wrong.', 'error');
@@ -45,7 +45,7 @@ const ActionDropdown = ({ user, refetch }) => {
                 disabled={loading}
                 className="p-1 rounded-full hover:bg-gray-200 focus:outline-none disabled:opacity-50"
             >
-                svg 🟢 {/* আপনি এখানে তিন ডট আইকন বসাতে পারেন */}
+                svg 🟢
                 <span className="font-bold text-lg">⋮</span>
             </button>
 

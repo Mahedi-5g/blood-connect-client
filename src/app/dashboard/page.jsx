@@ -14,7 +14,7 @@ export default function DashboardHome() {
   const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
   const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true); // 🎯 ডোনর রিকোয়েস্টের জন্য মূল নোড
+  const [loading, setLoading] = useState(true);
 
   const userRole = session?.user?.role?.toLowerCase() || "donor";
 
@@ -42,7 +42,7 @@ export default function DashboardHome() {
       };
       fetchRecentRequests();
     } else {
-      setLoading(false); // অ্যাডমিন বা ভলান্টিয়ার হলে ডোনর লোডিং ফলস করে দেবে
+      setLoading(false); 
     }
   }, [session, isPending, router, userRole]);
 
@@ -67,16 +67,16 @@ export default function DashboardHome() {
     toast.success("Donation request deleted successfully");
   };
 
-  // প্রথম গ্লোবাল লোডিং চেক
+ 
   if (isPending) {
     return <div className="min-h-screen flex items-center justify-center bg-slate-50">Loading Dashboard...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/50 p-6 sm:p-10 space-y-10">
+      
+      <div className="min-h-screen bg-slate-50/50 p-6 sm:p-10 space-y-10">
       <div className="max-w-7xl mx-auto space-y-10">
         
-        {/* 🏠 কমন ওয়েলকাম ব্যানার */}
         <div className="bg-linear-to-r from-slate-500 to-slate-400 rounded-3xl p-8 text-white shadow-xl">
           <h1 className="text-3xl font-extrabold sm:text-4xl flex items-center gap-2 text-slate-200">
             Welcome back, {session?.user?.name}! <PiHandWaving className="text-amber-300" />
@@ -86,12 +86,12 @@ export default function DashboardHome() {
           </p>
         </div>
 
-        {/* 👑 অ্যাডমিন বা ভলান্টিয়ার ড্যাশবোর্ড */}
+        {/* admin & volunteer*/}
         {(userRole === "admin" || userRole === "volunteer") && (
           <AdminVolunteerDashboard />
         )}
 
-        {/* 🩸 ডোনর ড্যাশবোর্ড কন্টেন্ট */}
+        {/* donor*/}
         {userRole === "donor" && (
           <>
             {loading ? (
@@ -126,5 +126,6 @@ export default function DashboardHome() {
         )}
       </div>
     </div>
+    
   );
 }

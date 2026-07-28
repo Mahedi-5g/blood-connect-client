@@ -9,7 +9,7 @@ import {
     ArrowRightFromSquare,
     House,
     Person,
-    Persons, // অ্যাডমিনের জন্য আইকন
+    Persons,
 } from "@gravity-ui/icons";
 
 import {
@@ -19,13 +19,12 @@ import {
 import { BiDonateBlood } from "react-icons/bi";
 import { LuGitPullRequestCreate } from "react-icons/lu";
 import { MdOutlineDashboard, MdOutlinePlaylistPlay } from 'react-icons/md';
+import Image from 'next/image';
 
 const DashboardSidebar = () => {
     const router = useRouter();
     const { data: session } = authClient.useSession();
     const pathname = usePathname();
-
-    // ইউজারের রোল বের করা (ডিফল্ট হিসেবে donor ধরা হয়েছে যদি না থাকে)
     const userRole = session?.user?.role?.toLowerCase() || "donor";
 
     const getLinkClass = (href) => {
@@ -70,7 +69,7 @@ const DashboardSidebar = () => {
                                     <span>My Profile</span>
                                 </Link>
 
-                                {/* 👑 শুধুমাত্র ADMIN দের জন্য All Users অপশন */}
+                                {/* only admin*/}
                                 {userRole === "admin" && (
                                     <Link href="/dashboard/all-users" className={`${getLinkClass("/dashboard/all-users")} group`}>
                                         <Persons className={getIconClass("/dashboard/all-users")} />
@@ -80,14 +79,14 @@ const DashboardSidebar = () => {
                             </div>
                         </div>
 
-                        {/* Donations Section - রোলের ওপর ভিত্তি করে পরিবর্তন */}
+                        {/* Donations Section -roll based */}
                         <div>
                             <p className="text-xs tracking-[5px] text-slate-400 mb-4 font-bold">
                                 DONATIONS
                             </p>
 
                             <div className="space-y-1.5">
-                                {/* 🩸 কেস ১: শুধুমাত্র DONOR দের জন্য মেনু */}
+                                {/* donor menu*/}
                                 {userRole === "donor" && (
                                     <>
                                         <Link href="/dashboard/my-request" className={`${getLinkClass("/dashboard/my-request")} group`}>
@@ -102,7 +101,7 @@ const DashboardSidebar = () => {
                                     </>
                                 )}
 
-                                {/* 🤝 কেস ২: VOLUNTEER এবং ADMIN উভয়ের জন্য মেনু */}
+                                {/* VOLUNTEER and ADMIN  */}
                                 {(userRole === "volunteer" || userRole === "admin") && (
                                     <Link href="/dashboard/all-donation-requests" className={`${getLinkClass("/dashboard/all-donation-requests")} group`}>
                                         <MdOutlinePlaylistPlay className={getIconClass("/dashboard/all-donation-requests")} />
@@ -117,17 +116,22 @@ const DashboardSidebar = () => {
                 {/* Bottom Profile & Logout */}
                 <div className="border-t p-5 bg-slate-50/50">
                     <div className="flex items-center gap-3 mb-5">
-                        {/* 🎯 HTML Dom error ও 404 এরর ফিক্স করা Avatar */}
-                        <Avatar
-                            src={session?.user?.image || null}
-                            name={session?.user?.name || "U"}
-                            color="danger"
-                            className="w-10 h-10 border-2 border-red-200"
-                        />
+
+                        <Avatar>
+                            <Image
+                                src={session?.user?.image || null}
+                                name={session?.user?.name || "U"}
+                                alt={session?.user?.name}
+                                height={40}
+                                width={40}
+                                color="danger"
+                                className="w-10 h-10 border-2 rounded-full object-cover border-red-200"
+                            />
+                        </Avatar>
 
                         <div className="overflow-hidden">
                             <div className="flex items-center gap-1.5">
-                                <p className="font-semibold text-sm text-slate-800 truncate max-w-[100px]">
+                                <p className="font-semibold text-sm text-slate-800 truncate max-w-25">
                                     {session?.user?.name || "User"}
                                 </p>
                                 <span className="text-[10px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded uppercase">
