@@ -17,6 +17,7 @@ const DonationDetailsPage = () => {
     const [currentStatus, setCurrentStatus] = useState("");
 
     useEffect(() => {
+       
         const fetchRequest = async () => {
             try {
                 const res = await fetch(`http://localhost:5000/requests/${params.id}`);
@@ -27,7 +28,7 @@ const DonationDetailsPage = () => {
 
                 const data = await res.json();
                 setRequest(data);
-                setCurrentStatus(data.status);
+                setCurrentStatus(data.status || "pending");
 
             } catch (error) {
                 console.error(error);
@@ -40,39 +41,63 @@ const DonationDetailsPage = () => {
         if (params?.id) {
             fetchRequest();
         }
-    }, [params.id]);
-
+    }, [params?.id]);
 
     const handleConfirmDonation = async (e) => {
         e.preventDefault();
-        if (!session?.user) return;
+
+        if (!session?.user) {
+            toast.error("You must be logged in to donate!");
+            return;
+        }
 
         setSubmitting(true);
+
         try {
-            const res = await fetch(`http://localhost:5000/requests/${params.id}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    donorName: session.user.name,
-                    donorEmail: session.user.email,
-                    status: "inprogress",
-                }),
-            });
+            const res = await fetch(
+                `http://localhost:5000/requests/${params.id}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        status: "inprogress",
+                        donorName: session.user.name,
+                        donorEmail: session.user.email,
+                    }),
+                }
+            );
+
+            const data = await res.json();
 
             if (!res.ok) {
-                throw new Error("Failed to update status");
+                throw new Error(
+                    data.message || "Failed to confirm donation"
+                );
             }
 
+            
             setCurrentStatus("inprogress");
+
+            setRequest((prev) => ({
+                ...prev,
+                status: "inprogress",
+                donorName: session.user.name,
+                donorEmail: session.user.email,
+            }));
+
             setIsOpen(false);
-            toast.success(
-                "Thank you! You have committed to this blood donation. Status updated to 'In Progress'."
-            );
+
+
+            toast.success("Donation confirmed successfully!");
+
         } catch (error) {
-            console.error(error);
-            toast.error("Failed to confirm donation. Please try again.");
+            console.error("Donation Confirmation Error:", error);
+
+            toast.error(
+                error.message || "Failed to confirm donation"
+            );
         } finally {
             setSubmitting(false);
         }
@@ -81,7 +106,7 @@ const DonationDetailsPage = () => {
     if (loading) {
         return (
             <section className="py-24">
-                <div className="text-center text-lg font-semibold">
+                <div className="text-center text-lg font-semibold text-slate-600">
                     Loading...
                 </div>
             </section>
@@ -117,7 +142,6 @@ const DonationDetailsPage = () => {
                     </div>
 
                     <div className="p-8 space-y-8">
-
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 space-y-1">
                                 <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Date & Time</p>
@@ -144,6 +168,7 @@ const DonationDetailsPage = () => {
                         </div>
 
                         <hr className="border-slate-100" />
+
                         <div className="space-y-3">
                             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">Case Description / Message</h3>
                             <blockquote className="border-l-4 border-red-500 bg-red-50/50 p-4 rounded-r-xl text-slate-700 italic leading-relaxed">
@@ -152,14 +177,16 @@ const DonationDetailsPage = () => {
                         </div>
 
                         <div className="pt-4 flex justify-end">
-                            {currentStatus === "pending" ? (
+                            {currentStatus?.toLowerCase() === "pending" && (
                                 <button
                                     onClick={() => setIsOpen(true)}
-                                    className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-lg shadow-red-600/20 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0"
+                                    className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-lg transition"
                                 >
                                     Donate Blood Now
                                 </button>
-                            ) : (
+                            )}
+
+                            {currentStatus?.toLowerCase() === "inprogress" && (
                                 <button
                                     disabled
                                     className="w-full sm:w-auto bg-slate-200 text-slate-400 font-bold px-8 py-3.5 rounded-xl cursor-not-allowed"
