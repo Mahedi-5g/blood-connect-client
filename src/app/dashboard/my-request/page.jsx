@@ -5,7 +5,7 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Filter, ChevronLeft, ChevronRight } from "lucide-react";
-import DonationRequestsTable from "@/components/DonationRequestsTable"; // টেবিল কম্পোনেন্ট ইম্পোর্ট করুন
+import DonationRequestsTable from "@/components/DonationRequestsTable"; 
 
 export default function MyDonationRequests() {
   const { data: session, isPending } = authClient.useSession();
@@ -16,7 +16,7 @@ export default function MyDonationRequests() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 3;
 
   useEffect(() => {
     if (isPending) return;
