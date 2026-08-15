@@ -11,9 +11,12 @@ export default function CreateDonationRequest() {
   const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
-  const [userStatus, setUserStatus] = useState("active"); // 'active' অথবা 'blocked'
+  const [userStatus, setUserStatus] = useState("active");
 
-  // ফর্ম স্টেট
+  const [districts, setDistricts] = useState([]);
+  const [allUpazilas, setAllUpazilas] = useState([]);
+  const [filteredUpazilas, setFilteredUpazilas] = useState([]);
+
   const [formData, setFormData] = useState({
     recipientName: "",
     recipientDistrict: "",
@@ -26,7 +29,29 @@ export default function CreateDonationRequest() {
     requestMessage: "",
   });
 
-  // ইউজার ব্লকড কিনা তা ব্যাকএন্ড থেকে চেক করা (Security Guardrail)
+  useEffect(() => {
+    const fetchLocationData = async () => {
+      try {
+        const districtRes = await fetch("/data/districts.json");
+        const districtJson = await districtRes.json();
+
+        const upazilaRes = await fetch("/data/upazilas.json");
+        const upazilaJson = await upazilaRes.json();
+
+        const districtData = districtJson[2]?.data || districtJson;
+        const upazilaData = upazilaJson[2]?.data || upazilaJson;
+
+        setDistricts(districtData);
+        setAllUpazilas(upazilaData);
+      } catch (error) {
+        console.error("Error loading location data:", error);
+        toast.error("Failed to load district & upazila list");
+      }
+    };
+
+    fetchLocationData();
+  }, []);
+
   useEffect(() => {
     if (isPending) return;
     if (!session?.user) {
@@ -39,7 +64,7 @@ export default function CreateDonationRequest() {
         const res = await fetch(`http://localhost:5000/users/status?email=${session.user.email}`);
         if (res.ok) {
           const data = await res.json();
-          setUserStatus(data.status); // ব্যাকএন্ড থেকে 'active' বা 'blocked' আসবে
+          setUserStatus(data.status);
         }
       } catch (error) {
         console.error("Error checking user status:", error);
@@ -54,10 +79,29 @@ export default function CreateDonationRequest() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleDistrictChange = (e) => {
+    const selectedDistrictId = e.target.value;
+
+    const selectedDistrictObj = districts.find(
+      (d) => String(d.id) === String(selectedDistrictId)
+    );
+    const districtName = selectedDistrictObj ? selectedDistrictObj.name : "";
+
+    setFormData((prev) => ({
+      ...prev,
+      recipientDistrict: districtName,
+      recipientUpazila: "",
+    }));
+
+    const filtered = allUpazilas.filter(
+      (u) => String(u.district_id) === String(selectedDistrictId)
+    );
+    setFilteredUpazilas(filtered);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // এক্সট্রা সিকিউরিটি চেক: ফ্রন্টএন্ডেও ব্লকড ইউজার সাবমিট করতে পারবে না
     if (userStatus === "blocked") {
       toast.error("Your account is blocked! You cannot create a donation request.");
       return;
@@ -65,12 +109,11 @@ export default function CreateDonationRequest() {
 
     setSubmitting(true);
 
-    // সাবমিশনের জন্য সম্পূর্ণ অবজেক্ট তৈরি (default status: pending)
     const requestData = {
       ...formData,
       requesterName: session?.user?.name,
       requesterEmail: session?.user?.email,
-      status: "pending", // ডিফল্ট স্ট্যাটাস ব্যাকএন্ডেও হ্যান্ডেল করা হবে
+      status: "pending",
     };
 
     try {
@@ -106,11 +149,10 @@ export default function CreateDonationRequest() {
           
           {/* Header */}
           <div className="bg-linear-to-r from-red-600 to-rose-600 p-8 text-white text-center sm:text-left">
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Create Donation Request </h1>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Create Donation Request</h1>
             <p className="mt-2 text-sm text-red-100 font-medium">Fill up the form below to post an emergency blood requirement.</p>
           </div>
 
-          {/* 🚨 Blocked User Warning Alert */}
           {userStatus === "blocked" ? (
             <div className="p-8 text-center space-y-4">
               <div className="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto">
@@ -123,8 +165,6 @@ export default function CreateDonationRequest() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
-              
-              {/* Row 1: Requester Info (Read Only) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1"><User className="w-3.5 h-3.5"/> Requester Name</label>
@@ -138,7 +178,6 @@ export default function CreateDonationRequest() {
 
               <hr className="border-slate-100" />
 
-              {/* Row 2: Recipient Name & Blood Group */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Recipient Name</label>
@@ -155,31 +194,43 @@ export default function CreateDonationRequest() {
                 </div>
               </div>
 
-              {/* Row 3: Location (District & Upazila) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1"><MapPin className="w-3.5 h-3.5"/> Recipient District</label>
-                  <select name="recipientDistrict" required value={formData.recipientDistrict} onChange={handleChange} className="w-full px-4 py-3 border border-slate-200 focus:border-red-500 rounded-xl text-slate-800 text-sm font-medium outline-none bg-white transition">
+                  <select 
+                    required 
+                    onChange={handleDistrictChange} 
+                    className="w-full px-4 py-3 border border-slate-200 focus:border-red-500 rounded-xl text-slate-800 text-sm font-medium outline-none bg-white transition"
+                  >
                     <option value="">Select District</option>
-                    <option value="Dhaka">Dhaka</option>
-                    <option value="Chittagong">Chittagong</option>
-                    <option value="Sylhet">Sylhet</option>
-                    {/* আপনার অন্যান্য ডিস্ট্রিক্ট অপশন এখানে যোগ করতে পারেন */}
+                    {districts.map((district) => (
+                      <option key={district.id} value={district.id}>
+                        {district.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
+
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1"><MapPin className="w-3.5 h-3.5"/> Recipient Upazila</label>
-                  <select name="recipientUpazila" required value={formData.recipientUpazila} onChange={handleChange} className="w-full px-4 py-3 border border-slate-200 focus:border-red-500 rounded-xl text-slate-800 text-sm font-medium outline-none bg-white transition">
+                  <select 
+                    name="recipientUpazila" 
+                    required 
+                    value={formData.recipientUpazila} 
+                    onChange={handleChange} 
+                    disabled={filteredUpazilas.length === 0}
+                    className="w-full px-4 py-3 border border-slate-200 focus:border-red-500 rounded-xl text-slate-800 text-sm font-medium outline-none bg-white transition disabled:bg-slate-100 disabled:cursor-not-allowed"
+                  >
                     <option value="">Select Upazila</option>
-                    <option value="Mirpur">Mirpur</option>
-                    <option value="Dhanmondi">Dhanmondi</option>
-                    <option value="Hathazari">Hathazari</option>
-                    {/* আপনার অন্যান্য উপজেলা অপশন এখানে যোগ করতে পারেন */}
+                    {filteredUpazilas.map((upazila) => (
+                      <option key={upazila.id} value={upazila.name}>
+                        {upazila.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
 
-              {/* Row 4: Hospital & Full Address */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1"><Hospital className="w-3.5 h-3.5"/> Hospital Name</label>
@@ -191,7 +242,6 @@ export default function CreateDonationRequest() {
                 </div>
               </div>
 
-              {/* Row 5: Date & Time */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1"><Calendar className="w-3.5 h-3.5"/> Donation Date</label>
@@ -203,13 +253,11 @@ export default function CreateDonationRequest() {
                 </div>
               </div>
 
-              {/* Row 6: Message */}
               <div>
-                <label className=" text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1"><MessageSquare className="w-3.5 h-3.5"/> Request Message (Details)</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1"><MessageSquare className="w-3.5 h-3.5"/> Request Message (Details)</label>
                 <textarea name="requestMessage" required rows="4" value={formData.requestMessage} onChange={handleChange} placeholder="Explain why blood is urgently required..." className="w-full px-4 py-3 border border-slate-200 focus:border-red-500 rounded-xl text-slate-800 text-sm font-medium outline-none transition resize-none" />
               </div>
 
-              {/* Request Button */}
               <div className="pt-2">
                 <button type="submit" disabled={submitting} className="w-full h-12 bg-red-600 hover:bg-red-700 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-red-600/10 transition disabled:bg-slate-300 disabled:cursor-not-allowed">
                   {submitting ? "Creating Request..." : "Submit Donation Request"}

@@ -9,8 +9,14 @@ const EditDonationRequestPage = () => {
     const params = useParams();
     const router = useRouter();
 
+    const [districts, setDistricts] = useState([]);
+    const [allUpazilas, setAllUpazilas] = useState([]);
+    const [filteredUpazilas, setFilteredUpazilas] = useState([]);
+    const [selectedDistrictId, setSelectedDistrictId] = useState("");
+
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    
     const [formData, setFormData] = useState({
         recipientName: '',
         bloodGroup: '',
@@ -24,39 +30,88 @@ const EditDonationRequestPage = () => {
     });
 
     useEffect(() => {
-        const fetchRequest = async () => {
+        const loadInitialData = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/requests/${params.id}`);
-                if (!res.ok) throw new Error("Failed to fetch request data");
 
-                const data = await res.json();
-                setFormData({
-                    recipientName: data.recipientName || '',
-                    bloodGroup: data.bloodGroup || '',
-                    hospitalName: data.hospitalName || '',
-                    fullAddress: data.fullAddress || '',
-                    recipientDistrict: data.recipientDistrict || '',
-                    recipientUpazila: data.recipientUpazila || '',
-                    donationDate: data.donationDate || '',
-                    donationTime: data.donationTime || '',
-                    requestMessage: data.requestMessage || ''
-                });
+                const districtRes = await fetch("/data/districts.json");
+                const districtJson = await districtRes.json();
+
+                const upazilaRes = await fetch("/data/upazilas.json");
+                const upazilaJson = await upazilaRes.json();
+
+                const districtData = districtJson[2]?.data || districtJson;
+                const upazilaData = upazilaJson[2]?.data || upazilaJson;
+
+                setDistricts(districtData);
+                setAllUpazilas(upazilaData);
+
+                if (params?.id) {
+                    const reqRes = await fetch(`http://localhost:5000/requests/${params.id}`);
+                    if (!reqRes.ok) throw new Error("Failed to fetch request data");
+
+                    const data = await reqRes.json();
+                    
+                    setFormData({
+                        recipientName: data.recipientName || '',
+                        bloodGroup: data.bloodGroup || '',
+                        hospitalName: data.hospitalName || '',
+                        fullAddress: data.fullAddress || '',
+                        recipientDistrict: data.recipientDistrict || '',
+                        recipientUpazila: data.recipientUpazila || '',
+                        donationDate: data.donationDate || '',
+                        donationTime: data.donationTime || '',
+                        requestMessage: data.requestMessage || ''
+                    });
+
+                    if (data.recipientDistrict) {
+                        const matchedDistrict = districtData.find(
+                            (d) => String(d.name).trim().toLowerCase() === String(data.recipientDistrict).trim().toLowerCase()
+                        );
+
+                        if (matchedDistrict) {
+                            const distId = String(matchedDistrict.id);
+                            setSelectedDistrictId(distId);
+                            const initialUpazilas = upazilaData.filter(
+                                (u) => String(u.district_id) === distId
+                            );
+                            setFilteredUpazilas(initialUpazilas);
+                        }
+                    }
+                }
             } catch (error) {
-                console.error(error);
-                toast.error("Failed to load donation details");
+                console.error("Initialization Error:", error);
+                toast.error("Failed to load request details");
             } finally {
                 setLoading(false);
             }
         };
 
-        if (params?.id) {
-            fetchRequest();
-        }
+        loadInitialData();
     }, [params?.id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleDistrictChange = (e) => {
+        const districtId = e.target.value;
+        setSelectedDistrictId(districtId);
+
+        const selectedDistrict = districts.find(
+            (d) => String(d.id) === String(districtId)
+        );
+
+        setFormData((prev) => ({
+            ...prev,
+            recipientDistrict: selectedDistrict ? selectedDistrict.name : "",
+            recipientUpazila: ""
+        }));
+
+        const filtered = allUpazilas.filter(
+            (u) => String(u.district_id) === String(districtId)
+        );
+        setFilteredUpazilas(filtered);
     };
 
     const handleUpdate = async (e) => {
@@ -65,7 +120,7 @@ const EditDonationRequestPage = () => {
 
         try {
             const { _id, ...cleanFormData } = formData;
-            
+
             const res = await fetch(`http://localhost:5000/requests/${params.id}`, {
                 method: "PUT",
                 headers: {
@@ -80,7 +135,7 @@ const EditDonationRequestPage = () => {
             }
 
             toast.success("Donation request updated successfully!");
-            router.push(`/dashboard/my-request`); 
+            router.push(`/dashboard/my-request`);
         } catch (error) {
             console.error("Update error:", error);
             toast.error(error.message || "Something went wrong!");
@@ -106,6 +161,7 @@ const EditDonationRequestPage = () => {
                     </h2>
 
                     <form onSubmit={handleUpdate} className="space-y-5">
+                        {/* Recipient Name */}
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-1">
                                 Recipient Name
@@ -120,6 +176,7 @@ const EditDonationRequestPage = () => {
                             />
                         </div>
 
+                        {/* Blood Group & Hospital Name */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-1">
@@ -159,36 +216,58 @@ const EditDonationRequestPage = () => {
                             </div>
                         </div>
 
+                        {/* District & Upazila Selection */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-1">
                                     District
                                 </label>
-                                <input
-                                    type="text"
-                                    name="recipientDistrict"
-                                    value={formData.recipientDistrict}
-                                    onChange={handleChange}
+                                <select
+                                    value={selectedDistrictId}
+                                    onChange={handleDistrictChange}
                                     required
-                                    className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none"
-                                />
+                                    className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none bg-white"
+                                >
+                                    <option value="">Select District</option>
+                                    {districts.map((district) => (
+                                        <option key={district.id} value={district.id}>
+                                            {district.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
 
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-1">
                                     Upazila
                                 </label>
-                                <input
-                                    type="text"
+                                <select
                                     name="recipientUpazila"
                                     value={formData.recipientUpazila}
                                     onChange={handleChange}
                                     required
-                                    className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none"
-                                />
+                                    disabled={!selectedDistrictId && !formData.recipientUpazila}
+                                    className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none bg-white disabled:bg-slate-100 disabled:cursor-not-allowed"
+                                >
+                                    <option value="">Select Upazila</option>
+
+                                    {formData.recipientUpazila && 
+                                     !filteredUpazilas.some((u) => u.name.toLowerCase() === formData.recipientUpazila.toLowerCase()) && (
+                                        <option value={formData.recipientUpazila}>
+                                            {formData.recipientUpazila}
+                                        </option>
+                                    )}
+
+                                    {filteredUpazilas.map((upazila) => (
+                                        <option key={upazila.id} value={upazila.name}>
+                                            {upazila.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
 
+                        {/* Full Address */}
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-1">
                                 Full Address
@@ -203,6 +282,7 @@ const EditDonationRequestPage = () => {
                             />
                         </div>
 
+                        {/* Date & Time */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-1">
@@ -232,7 +312,7 @@ const EditDonationRequestPage = () => {
                                 />
                             </div>
                         </div>
-
+   
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-1">
                                 Request Message / Description
@@ -247,6 +327,7 @@ const EditDonationRequestPage = () => {
                             ></textarea>
                         </div>
 
+                        {/* Action Buttons */}
                         <div className="flex gap-4 pt-4">
                             <button
                                 type="button"
