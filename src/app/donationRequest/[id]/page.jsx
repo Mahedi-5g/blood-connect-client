@@ -2,13 +2,14 @@
 
 import PrivateRoute from '@/components/PrivateRoute';
 import { authClient } from '@/lib/auth-client';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { FaRegLightbulb } from 'react-icons/fa6';
 
 const DonationDetailsPage = () => {
     const params = useParams();
+    const router = useRouter();
     const [request, setRequest] = useState(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -17,6 +18,7 @@ const DonationDetailsPage = () => {
     const [currentStatus, setCurrentStatus] = useState("");
 
     useEffect(() => {
+        
        
         const fetchRequest = async () => {
             try {
@@ -91,6 +93,7 @@ const DonationDetailsPage = () => {
 
 
             toast.success("Donation confirmed successfully!");
+             router.push(`/dashboard/my-request`); 
 
         } catch (error) {
             console.error("Donation Confirmation Error:", error);
