@@ -5,8 +5,13 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import RequestsTable from './RequestsTable';
 import FilterStatus from './FilterStatus';
+import PaginationPage from '@/components/Pagination';
+import { authClient } from '@/lib/auth-client';
 
 const AllBloodDonationRequests = () => {
+    const { data: session } = authClient.useSession();
+    const userRole = session?.user?.role || 'volunteer'; // default fallback 'volunteer'
+
     const [filterStatus, setFilterStatus] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 4;
@@ -21,7 +26,7 @@ const AllBloodDonationRequests = () => {
 
     const handleStatusChange = (status) => {
         setFilterStatus(status);
-        setCurrentPage(1);
+        setCurrentPage(1); 
     };
 
     const totalPages = Math.ceil(requests.length / itemsPerPage);
@@ -55,41 +60,19 @@ const AllBloodDonationRequests = () => {
                 </div>
             ) : (
                 <>
-                    <RequestsTable requests={currentRequests} refetch={refetch} />
+                    {/* role পাঠাল টেবিল কম্পোনেন্ট বুজবে Edit/Delete অপশন দেখাবে কিনা */}
+                    <RequestsTable 
+                        requests={currentRequests} 
+                        refetch={refetch} 
+                        role={userRole} 
+                    />
 
                     {/* Pagination Controls */}
-                    {totalPages > 1 && (
-                        <div className="flex justify-center items-center gap-2 pt-4">
-                            <button
-                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                                disabled={currentPage === 1}
-                                className="px-4 py-2 border rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                            >
-                                Previous
-                            </button>
-
-                            {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-                                <button
-                                    key={page}
-                                    onClick={() => setCurrentPage(page)}
-                                    className={`px-4 py-2 rounded-xl text-sm font-bold transition ${currentPage === page
-                                            ? 'bg-red-600 text-white shadow-md'
-                                            : 'bg-white border text-slate-700 hover:bg-slate-50'
-                                        }`}
-                                >
-                                    {page}
-                                </button>
-                            ))}
-
-                            <button
-                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                                disabled={currentPage === totalPages}
-                                className="px-4 py-2 border rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                            >
-                                Next
-                            </button>
-                        </div>
-                    )}
+                    <PaginationPage 
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        setCurrentPage={setCurrentPage}
+                    />
                 </>
             )}
         </div>

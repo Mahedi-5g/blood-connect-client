@@ -7,10 +7,10 @@ import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 import { MoreVertical, Eye, Edit3, Trash2, CheckCircle2, XCircle } from 'lucide-react';
 
-const RequestsTable = ({ requests, refetch }) => {
+const RequestsTable = ({ requests, refetch, role }) => {
     const [openMenuId, setOpenMenuId] = useState(null);
 
-    // ১. স্ট্যাটাস পরিবর্তন হ্যান্ডলার (Done / Cancel)
+    // ১. Status Update Handler (Admin & Volunteer both can access)
     const handleStatusChange = async (id, newStatus) => {
         try {
             const res = await axios.patch(`http://localhost:5000/requests/status/${id}`, { status: newStatus });
@@ -26,7 +26,7 @@ const RequestsTable = ({ requests, refetch }) => {
         }
     };
 
-    // ২. রিকোয়েস্ট ডিলিট হ্যান্ডলার
+    // ২. Delete Request Handler (Only Admin)
     const handleDelete = async (id) => {
         setOpenMenuId(null);
         const result = await Swal.fire({
@@ -104,11 +104,12 @@ const RequestsTable = ({ requests, refetch }) => {
 
                                     {/* Status Badge */}
                                     <td className="p-4">
-                                        <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase ${req.status === 'pending' ? 'bg-amber-100 text-amber-700' :
-                                                req.status === 'inprogress' ? 'bg-blue-100 text-blue-700' :
-                                                    req.status === 'done' ? 'bg-emerald-100 text-emerald-700' :
-                                                        'bg-rose-100 text-rose-700'
-                                            }`}>
+                                        <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase ${
+                                            req.status === 'pending' ? 'bg-amber-100 text-amber-700' :
+                                            req.status === 'inprogress' ? 'bg-blue-100 text-blue-700' :
+                                            req.status === 'done' ? 'bg-emerald-100 text-emerald-700' :
+                                            'bg-rose-100 text-rose-700'
+                                        }`}>
                                             {req.status}
                                         </span>
                                     </td>
@@ -124,8 +125,8 @@ const RequestsTable = ({ requests, refetch }) => {
 
                                         {openMenuId === req._id && (
                                             <div className="absolute right-4 mt-1 w-48 bg-white border border-slate-100 rounded-xl shadow-xl z-30 text-left py-2 space-y-1">
-
-                                                {/* In-progress স্ট্যাটাস থাকলে Done এবং Cancel করার সুবিধা */}
+                                                
+                                                {/* In-progress থাকলে Done / Cancel করার সুযোগ (Volunteer & Admin both can update status) */}
                                                 {req.status === 'inprogress' && (
                                                     <>
                                                         <button
@@ -143,29 +144,32 @@ const RequestsTable = ({ requests, refetch }) => {
                                                     </>
                                                 )}
 
-                                                {/* Edit Link */}
+                                                {/* View Details Link (Available for all) */}
                                                 <Link
-                                                    href={`/dashboard/edit-request/${req._id}`}
-                                                    className="w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
-                                                >
-                                                    <Edit3 className="w-4 h-4 text-slate-500" /> Edit Request
-                                                </Link>
-
-                                                {/* View Details Link */}
-                                                <Link
-                                                    href={`/donationRequest/${req._id}`}
+                                                    href={`/donation-requests/${req._id}`}
                                                     className="w-full px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2"
                                                 >
                                                     <Eye className="w-4 h-4" /> View Details
                                                 </Link>
 
-                                                {/* Delete Button */}
-                                                <button
-                                                    onClick={() => handleDelete(req._id)}
-                                                    className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 border-t border-slate-100 mt-1 pt-2"
-                                                >
-                                                    <Trash2 className="w-4 h-4" /> Delete Request
-                                                </button>
+                                                {/* ONLY ADMIN CAN EDIT AND DELETE */}
+                                                {role === 'admin' && (
+                                                    <>
+                                                        <Link
+                                                            href={`/dashboard/edit-donation-request/${req._id}`}
+                                                            className="w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                                                        >
+                                                            <Edit3 className="w-4 h-4 text-slate-500" /> Edit Request
+                                                        </Link>
+
+                                                        <button
+                                                            onClick={() => handleDelete(req._id)}
+                                                            className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 border-t border-slate-100 mt-1 pt-2"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" /> Delete Request
+                                                        </button>
+                                                    </>
+                                                )}
                                             </div>
                                         )}
                                     </td>
