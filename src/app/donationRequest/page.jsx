@@ -16,7 +16,7 @@ export default function DonationRequestsPage() {
 
     const handleViewDetails = (id) => {
         if (!session?.user) {
-            router.push(`/auth/signup?redirect=/donationRequest/${id}`);
+            router.push(`/auth/login?redirect=/donationRequest/${id}`);
             return;
         }
 
@@ -125,7 +125,7 @@ export default function DonationRequestsPage() {
                                         </div>
                                     </div>
                                 </div>
-
+                                
                                 <Button
                                     onPress={() => handleViewDetails(request._id)}
                                     className="w-full mt-8 bg-[#e65100] text-white font-bold text-sm h-12 rounded-2xl shadow-[0_6px_20px_rgba(230,81,0,0.3)] hover:bg-[#d84315]"
@@ -133,6 +133,7 @@ export default function DonationRequestsPage() {
                                 >
                                     View Details
                                 </Button>
+                               
                             </div>
                         </div>
                     ))}

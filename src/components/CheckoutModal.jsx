@@ -8,9 +8,9 @@ const CheckoutModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  // 🔹 মডালের ভেতরে handleDonate / handleSubmit হিসেবে বসান
+
   const handleDonate = async (e) => {
-    e.preventDefault(); // Form submit refresh আটকানোর জন্য
+    e.preventDefault();
     setLoading(true);
 
     try {
@@ -18,7 +18,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
       const data = await res.json();
 
       if (data.url) {
-        window.location.href = data.url; // Redirect to Stripe Checkout
+        window.location.href = data.url; 
       } else {
         console.error('Checkout error:', data.error);
         setLoading(false);
@@ -40,7 +40,6 @@ const CheckoutModal = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* 🔹 Form-এর onSubmit-এ handleDonate জুড়ে দিন */}
         <form onSubmit={handleDonate} className="space-y-4">
           <p className="text-sm text-slate-600">
             You will be redirected to Stripe to securely complete your payment.
