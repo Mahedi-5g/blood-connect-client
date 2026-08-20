@@ -75,12 +75,16 @@ function Navbar() {
                         </Link>
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold bg-linear-to-r from-red-400 to-rose-500 bg-clip-text text-transparent">
-                            BloodConnect
-                        </h1>
-                        <p className="text-xs text-default-500">
-                            Save Lives Together
-                        </p>
+                        <Link href={"/"}>
+                            <div>
+                                <h1 className="text-2xl font-bold bg-linear-to-r from-red-400 to-rose-500 bg-clip-text text-transparent">
+                                    BloodConnect
+                                </h1>
+                                <p className="text-xs text-default-500">
+                                    Save Lives Together
+                                </p>
+                            </div>
+                        </Link>
                     </div>
                 </div>
                 <ul className="hidden items-center gap-6 md:flex">

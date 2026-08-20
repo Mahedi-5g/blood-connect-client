@@ -4,19 +4,21 @@ import { Button } from "@heroui/react";
 import { MapPin, Calendar } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 export default function RecentBloodRequests() {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
-    
+
     const router = useRouter();
-    const user = null; 
+    const { data: session } = authClient.useSession();
+    const user = session?.user;
 
     useEffect(() => {
         const fetchRequests = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL }/featured-requests`);
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/featured-requests`);
 
                 if (!res.ok) {
                     throw new Error("Failed to fetch requests");
@@ -25,7 +27,7 @@ export default function RecentBloodRequests() {
                 const data = await res.json();
                 setRequests(data);
             } catch (error) {
-                console.error(error);
+                console.error("Fetch requests error:", error);
             } finally {
                 setLoading(false);
             }
@@ -34,12 +36,17 @@ export default function RecentBloodRequests() {
         fetchRequests();
     }, []);
 
+
     const handleViewDetails = (requestId) => {
         if (!user) {
-            router.push(`/auth/login?redirect=/donationRequest/${requestId}`);
-        } else {
-            router.push(`/donationRequest/${requestId}`);
+            const redirectUrl = `/donationRequest/${requestId}`;
+            router.push(
+                `/auth/login?redirect=${encodeURIComponent(redirectUrl)}`
+            );
+            return;
         }
+
+        router.push(`/donationRequest/${requestId}`);
     };
 
     if (loading) {
@@ -95,7 +102,7 @@ export default function RecentBloodRequests() {
 
                                 <div className="mt-8 space-y-4 px-1">
                                     <div className="flex items-start gap-4">
-                                        <div className="w-9 h-9 min-w-9 bg-[#f9ebe0]/70 rounded-xl flex items-center justify-center">
+                                        <div className="w-[#24px] h-9 min-w-9 bg-[#f9ebe0]/70 rounded-xl flex items-center justify-center">
                                             <MapPin className="w-4 h-4 text-[#c05621]" strokeWidth={2.5} />
                                         </div>
                                         <div>

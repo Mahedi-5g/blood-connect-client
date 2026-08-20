@@ -237,11 +237,12 @@ export default function SearchDonorsPage() {
                     <div className="space-y-4">
                       {/* Name & Avatar Placeholder */}
                       <div className="flex items-center gap-3">
-                        <Avatar
-                          src={donor.image}
-                          name={donor.name}
-                          className="w-10 h-10"
-                        />
+                        <Avatar className="w-10 h-10 border-2 rounded-full border-white shadow-xl text-xl">
+                          <Avatar.Image
+                            src={donor?.image || "/default-avatar.png"}
+                            name={donor?.name}
+                          />
+                        </Avatar>
                         <div>
                           <h3 className="font-bold text-slate-900 flex items-center gap-1.5">
                             {donor.name}

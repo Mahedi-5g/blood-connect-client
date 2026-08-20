@@ -18,8 +18,6 @@ const DonationDetailsPage = () => {
     const [currentStatus, setCurrentStatus] = useState("");
 
     useEffect(() => {
-        
-       
         const fetchRequest = async () => {
             try {
                 const res = await fetch(`http://localhost:5000/requests/${params.id}`);
@@ -56,11 +54,14 @@ const DonationDetailsPage = () => {
         setSubmitting(true);
 
         try {
+            const token = session?.user?.token || localStorage.getItem("token");
+
             const res = await fetch(
-                `http://localhost:5000/requests/${params.id}`,
+                `${process.env.NEXT_PUBLIC_API_URL}/requests/${params.id}`,
                 {
                     method: "PATCH",
                     headers: {
+                        "authorization": `Bearer ${token}`, 
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
@@ -79,7 +80,6 @@ const DonationDetailsPage = () => {
                 );
             }
 
-            
             setCurrentStatus("inprogress");
 
             setRequest((prev) => ({
@@ -90,14 +90,11 @@ const DonationDetailsPage = () => {
             }));
 
             setIsOpen(false);
-
-
             toast.success("Donation confirmed successfully!");
-             router.push(`/dashboard/my-request`); 
+            router.push(`/dashboard/my-request`);
 
         } catch (error) {
             console.error("Donation Confirmation Error:", error);
-
             toast.error(
                 error.message || "Failed to confirm donation"
             );
