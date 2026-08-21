@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Filter } from "lucide-react";
 import DonationRequestsTable from "@/components/DonationRequestsTable"; 
-import PaginationPage from "@/components/Pagination"; // Pagination component Import করা হয়েছে
+import PaginationPage from "@/components/Pagination";
 
 export default function MyDonationRequests() {
   const { data: session, isPending } = authClient.useSession();

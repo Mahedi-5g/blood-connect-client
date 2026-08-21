@@ -1,4 +1,4 @@
-'use client'; // এটি অবশ্যই দিতে হবে যেহেতু প্রোভাইডার ক্লায়েন্ট সাইড স্টেট মেইনটেইন করে
+'use client'; 
 
 import DashboardSidebar from '@/components/DashboardSidebar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

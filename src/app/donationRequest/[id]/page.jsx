@@ -10,17 +10,41 @@ import { FaRegLightbulb } from 'react-icons/fa6';
 const DonationDetailsPage = () => {
     const params = useParams();
     const router = useRouter();
+    const { data: session } = authClient.useSession();
     const [request, setRequest] = useState(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-    const { data: session } = authClient.useSession();
     const [isOpen, setIsOpen] = useState(false);
     const [currentStatus, setCurrentStatus] = useState("");
+    const [token, setToken] = useState("");
+
+    useEffect(() => {
+        async function loadToken() {
+            try {
+                const res = await fetch("/api/auth/token");
+                const data = await res.json();
+                if (data?.token) {
+                    setToken(data.token);
+                }
+            } catch (err) {
+                console.error("Token load failed", err);
+            }
+        }
+        loadToken();
+    }, []);
+
 
     useEffect(() => {
         const fetchRequest = async () => {
+            if (!token) return;
+
             try {
-                const res = await fetch(`http://localhost:5000/requests/${params.id}`);
+                setLoading(true);
+                const res = await fetch(`http://localhost:5000/requests/${params.id}`, {
+                    headers: {
+                        authorization: `Bearer ${token}` 
+                    }
+                });
 
                 if (!res.ok) {
                     throw new Error("Failed to fetch request");
@@ -38,10 +62,10 @@ const DonationDetailsPage = () => {
             }
         };
 
-        if (params?.id) {
+        if (params?.id && token) {
             fetchRequest();
         }
-    }, [params?.id]);
+    }, [params?.id, token]);
 
     const handleConfirmDonation = async (e) => {
         e.preventDefault();
@@ -54,15 +78,13 @@ const DonationDetailsPage = () => {
         setSubmitting(true);
 
         try {
-            const token = session?.user?.token || localStorage.getItem("token");
 
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/requests/${params.id}`,
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/requests/${params.id}`,
                 {
                     method: "PATCH",
                     headers: {
-                        "authorization": `Bearer ${token}`, 
                         "Content-Type": "application/json",
+                        "authorization": `Bearer ${token}` 
                     },
                     body: JSON.stringify({
                         status: "inprogress",

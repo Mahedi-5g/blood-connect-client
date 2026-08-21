@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
+import ConditionalFooter from "@/components/ConditionalFooter";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -32,7 +33,7 @@ export default function RootLayout({ children }) {
           {children}
           <Toaster position="top-right" reverseOrder={false} />
           </main>
-        <Footer></Footer>
+          <ConditionalFooter></ConditionalFooter>
       </body>
     </html>
   );
