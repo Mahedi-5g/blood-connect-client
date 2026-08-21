@@ -61,7 +61,13 @@ export default function CreateDonationRequest() {
 
     const checkUserStatus = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/users/status?email=${session.user.email}`);
+        const {data:tokenData} = await authClient.token();
+        const res = await fetch(`http://localhost:5000/users/status?email=${session.user.email}`,{
+           headers: {
+          "Content-Type": "application/json",
+          "authorization": `Bearer ${tokenData?.token}`,
+        },
+        });
         if (res.ok) {
           const data = await res.json();
           setUserStatus(data.status);
@@ -117,9 +123,13 @@ export default function CreateDonationRequest() {
     };
 
     try {
+      const {data:tokenData} = await authClient.token();
       const res = await fetch("http://localhost:5000/requests", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "authorization":`Bearer ${tokenData?.token}`
+         },
         body: JSON.stringify(requestData),
       });
 
@@ -145,7 +155,7 @@ export default function CreateDonationRequest() {
   return (
     <PrivateRoute>
       <div className="min-h-screen bg-slate-50/50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+        <div className="w-full mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
           
           {/* Header */}
           <div className="bg-linear-to-r from-red-600 to-rose-600 p-8 text-white text-center sm:text-left">

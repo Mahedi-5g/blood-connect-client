@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { HeartHandshake, PlusCircle, Search, ShieldCheck } from 'lucide-react';
 import PaginationPage from '@/components/Pagination';
 import CheckoutModal from '@/components/CheckoutModal';
+import { authClient } from '@/lib/auth-client';
 
 export default function FundingPage() {
   const [funds, setFunds] = useState([]);
@@ -14,8 +15,14 @@ export default function FundingPage() {
 
   const fetchFunds = async () => {
     try {
+      const {data:tokenData} = await authClient.token();
       setLoading(true);
-      const res = await fetch('http://localhost:5000/api/funds', { cache: 'no-store' });
+      const res = await fetch('http://localhost:5000/api/funds',{
+        headers: {
+                        "Content-Type": "application/json",
+                        "authorization":`Bearer ${tokenData?.token}`
+                    },
+      }, { cache: 'no-store' });
       const data = await res.json();
       if (Array.isArray(data)) {
         setFunds(data);
@@ -31,7 +38,6 @@ export default function FundingPage() {
     fetchFunds();
   }, []);
 
-  // Pagination Calculation
   const totalPages = Math.ceil(funds.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

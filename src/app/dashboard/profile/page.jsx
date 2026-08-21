@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Avatar } from "@heroui/react";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import ProfileHeaderSection from "@/components/profile/ProfileHeader";
 import PersonalInfoSection from "@/components/profile/PersonalInfo";
@@ -42,12 +42,14 @@ export default function ProfilePage() {
         setLoading(true);
 
         try {
+            const {data:tokenData} = await authClient.token();
             const res = await fetch(
                 `http://localhost:5000/user/update-profile?email=${session?.user?.email}`,
                 {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json",
+                        "authorization":`Bearer ${tokenData?.token}`
                     },
                     body: JSON.stringify({
                         name: formData.name,

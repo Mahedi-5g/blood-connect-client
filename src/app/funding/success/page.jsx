@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { stripe } from '../../../lib/stripe';
 import Link from 'next/link';
+import { authClient } from '@/lib/auth-client';
 
 export default async function SuccessPage({ searchParams }) {
   const params = await searchParams;
@@ -24,9 +25,13 @@ export default async function SuccessPage({ searchParams }) {
   const transactionId = session.payment_intent?.id || session.id;
 
   try {
+    const {data:tokenData} = await authClient.token();
     await fetch('http://localhost:5000/api/funds', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${tokenData?.token}`
+       },
       body: JSON.stringify({
         userName: customerName,
         userEmail: customerEmail,

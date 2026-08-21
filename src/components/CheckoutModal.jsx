@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { CreditCard, X } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 
 const CheckoutModal = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
@@ -14,20 +15,40 @@ const CheckoutModal = ({ isOpen, onClose }) => {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/checkout_sessions', { method: 'POST' });
-      const data = await res.json();
+        const { data: tokenData } = await authClient.token();
 
-      if (data.url) {
-        window.location.href = data.url; 
-      } else {
-        console.error('Checkout error:', data.error);
-        setLoading(false);
-      }
+        if (!tokenData?.token) {
+            throw new Error("Authentication token not found");
+        }
+
+        const res = await fetch("/api/checkout-sessions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${tokenData.token}`,
+            },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(
+                data?.error || "Failed to create checkout session"
+            );
+        }
+
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            throw new Error("Checkout URL not found");
+        }
+
     } catch (err) {
-      console.error('Checkout error:', err);
-      setLoading(false);
+        console.error("Checkout error:", err);
+        toast.error(err.message || "Something went wrong");
+        setLoading(false);
     }
-  };
+};
 
   return (
     <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">

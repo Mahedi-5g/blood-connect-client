@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import StatusFilter from './StatusFilter';
 import UsersTable from './UsersTable';
+import { authClient } from '@/lib/auth-client';
 
 const AllUsersPage = () => {
     const [status, setStatus] = useState('all');
@@ -12,7 +13,13 @@ const AllUsersPage = () => {
     const { data: users = [], isLoading, isError, refetch } = useQuery({
         queryKey: ['users', status],
         queryFn: async () => {
-            const res = await axios.get(`http://localhost:5000/users?status=${status}`);
+            const {data:tokenData} = await authClient.token();
+            const res = await axios.get(`http://localhost:5000/users?status=${status}`,{
+                headers: {
+                        "Content-Type": "application/json",
+                        "authorization":`Bearer ${tokenData?.token}`
+                    },
+            });
             return res.data;
         },
     });

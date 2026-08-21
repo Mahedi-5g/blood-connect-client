@@ -1,6 +1,7 @@
 "use client";
 
 import PrivateRoute from '@/components/PrivateRoute';
+import { authClient } from '@/lib/auth-client';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -16,7 +17,7 @@ const EditDonationRequestPage = () => {
 
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-    
+
     const [formData, setFormData] = useState({
         recipientName: '',
         bloodGroup: '',
@@ -29,65 +30,84 @@ const EditDonationRequestPage = () => {
         requestMessage: ''
     });
 
-    useEffect(() => {
-        const loadInitialData = async () => {
-            try {
+   useEffect(() => {
+    const loadInitialData = async () => {
+        try {
+            const { data: tokenData } = await authClient.token();
 
-                const districtRes = await fetch("/data/districts.json");
-                const districtJson = await districtRes.json();
+            const districtRes = await fetch("/data/districts.json");
+            const districtJson = await districtRes.json();
 
-                const upazilaRes = await fetch("/data/upazilas.json");
-                const upazilaJson = await upazilaRes.json();
+            const upazilaRes = await fetch("/data/upazilas.json");
+            const upazilaJson = await upazilaRes.json();
 
-                const districtData = districtJson[2]?.data || districtJson;
-                const upazilaData = upazilaJson[2]?.data || upazilaJson;
+            const districtData = districtJson[2]?.data || districtJson;
+            const upazilaData = upazilaJson[2]?.data || upazilaJson;
 
-                setDistricts(districtData);
-                setAllUpazilas(upazilaData);
+            setDistricts(districtData);
+            setAllUpazilas(upazilaData);
 
-                if (params?.id) {
-                    const reqRes = await fetch(`http://localhost:5000/requests/${params.id}`);
-                    if (!reqRes.ok) throw new Error("Failed to fetch request data");
+            if (params?.id) {
+                const reqRes = await fetch(
+                    `http://localhost:5000/requests/${params.id}`,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            authorization: `Bearer ${tokenData?.token}`,
+                        },
+                    }
+                );
 
-                    const data = await reqRes.json();
-                    
-                    setFormData({
-                        recipientName: data.recipientName || '',
-                        bloodGroup: data.bloodGroup || '',
-                        hospitalName: data.hospitalName || '',
-                        fullAddress: data.fullAddress || '',
-                        recipientDistrict: data.recipientDistrict || '',
-                        recipientUpazila: data.recipientUpazila || '',
-                        donationDate: data.donationDate || '',
-                        donationTime: data.donationTime || '',
-                        requestMessage: data.requestMessage || ''
-                    });
+                if (!reqRes.ok) {
+                    throw new Error("Failed to fetch request data");
+                }
 
-                    if (data.recipientDistrict) {
-                        const matchedDistrict = districtData.find(
-                            (d) => String(d.name).trim().toLowerCase() === String(data.recipientDistrict).trim().toLowerCase()
+                const data = await reqRes.json();
+
+                setFormData({
+                    recipientName: data.recipientName || "",
+                    bloodGroup: data.bloodGroup || "",
+                    hospitalName: data.hospitalName || "",
+                    fullAddress: data.fullAddress || "",
+                    recipientDistrict: data.recipientDistrict || "",
+                    recipientUpazila: data.recipientUpazila || "",
+                    donationDate: data.donationDate || "",
+                    donationTime: data.donationTime || "",
+                    requestMessage: data.requestMessage || "",
+                });
+
+                if (data.recipientDistrict) {
+                    const matchedDistrict = districtData.find(
+                        (d) =>
+                            String(d.name).trim().toLowerCase() ===
+                            String(data.recipientDistrict)
+                                .trim()
+                                .toLowerCase()
+                    );
+
+                    if (matchedDistrict) {
+                        const distId = String(matchedDistrict.id);
+
+                        setSelectedDistrictId(distId);
+
+                        const initialUpazilas = upazilaData.filter(
+                            (u) => String(u.district_id) === distId
                         );
 
-                        if (matchedDistrict) {
-                            const distId = String(matchedDistrict.id);
-                            setSelectedDistrictId(distId);
-                            const initialUpazilas = upazilaData.filter(
-                                (u) => String(u.district_id) === distId
-                            );
-                            setFilteredUpazilas(initialUpazilas);
-                        }
+                        setFilteredUpazilas(initialUpazilas);
                     }
                 }
-            } catch (error) {
-                console.error("Initialization Error:", error);
-                toast.error("Failed to load request details");
-            } finally {
-                setLoading(false);
             }
-        };
+        } catch (error) {
+            console.error("Initialization Error:", error);
+            toast.error("Failed to load request details");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        loadInitialData();
-    }, [params?.id]);
+    loadInitialData();
+}, [params?.id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -118,13 +138,17 @@ const EditDonationRequestPage = () => {
         e.preventDefault();
         setSubmitting(true);
 
+       
         try {
+             const { data: tokenData } = await authClient.token()
+
             const { _id, ...cleanFormData } = formData;
 
             const res = await fetch(`http://localhost:5000/requests/${params.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                     authorization: `Bearer ${tokenData?.token}`,
                 },
                 body: JSON.stringify(cleanFormData),
             });
@@ -251,12 +275,12 @@ const EditDonationRequestPage = () => {
                                 >
                                     <option value="">Select Upazila</option>
 
-                                    {formData.recipientUpazila && 
-                                     !filteredUpazilas.some((u) => u.name.toLowerCase() === formData.recipientUpazila.toLowerCase()) && (
-                                        <option value={formData.recipientUpazila}>
-                                            {formData.recipientUpazila}
-                                        </option>
-                                    )}
+                                    {formData.recipientUpazila &&
+                                        !filteredUpazilas.some((u) => u.name.toLowerCase() === formData.recipientUpazila.toLowerCase()) && (
+                                            <option value={formData.recipientUpazila}>
+                                                {formData.recipientUpazila}
+                                            </option>
+                                        )}
 
                                     {filteredUpazilas.map((upazila) => (
                                         <option key={upazila.id} value={upazila.name}>
@@ -312,7 +336,7 @@ const EditDonationRequestPage = () => {
                                 />
                             </div>
                         </div>
-   
+
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-1">
                                 Request Message / Description

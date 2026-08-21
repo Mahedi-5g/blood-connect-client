@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Eye, Edit, Trash2, CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 export default function DonationRequestsTable({ requests, onStatusChange, onDeleteSuccess }) {
   const [deleteId, setDeleteId] = useState(null);
@@ -10,11 +11,16 @@ export default function DonationRequestsTable({ requests, onStatusChange, onDele
   const handleDeleteConfirm = async () => {
     if (!deleteId) return;
     try {
+      const { data: tokenData } = await authClient.token();
       const res = await fetch(`http://localhost:5000/requests/${deleteId}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "authorization": `Bearer ${tokenData?.token}`,
+        },
       });
       if (!res.ok) throw new Error("Failed to delete request");
-      
+
       onDeleteSuccess(deleteId);
       setDeleteId(null);
     } catch (error) {

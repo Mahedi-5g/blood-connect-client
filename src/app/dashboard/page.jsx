@@ -17,19 +17,27 @@ export default function DashboardHome() {
   const [loading, setLoading] = useState(true);
 
   const userRole = session?.user?.role?.toLowerCase() || "donor";
-
+ 
   useEffect(() => {
     if (isPending) return;
     if (!session?.user) { 
       router.push("/auth/login"); 
       return; 
-    }
+    };
 
+    
   
     if (userRole === "donor") {
-      const fetchRecentRequests = async () => {
+      const fetchRecentRequests = async () => { 
+         const {data:tokenData}= await authClient.token();
         try {
-          const res = await fetch(`http://localhost:5000/my-requests?email=${session.user.email}&limit=3`);
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-requests?email=${session.user.email}&limit=3`,{
+            headers: { 
+          "Content-Type": "application/json",
+          "authorization":`Bearer ${tokenData?.token}`
+
+         },
+          });
           if (!res.ok) throw new Error("Failed to fetch");
           const data = await res.json();
           setRequests(data);
@@ -47,10 +55,15 @@ export default function DashboardHome() {
   }, [session, isPending, router, userRole]);
 
   const handleStatusChange = async (id, newStatus) => {
+     const {data:tokenData}= await authClient.token();
     try {
-      const res = await fetch(`http://localhost:5000/requests/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/requests/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "authorization":`Bearer ${tokenData?.token}`
+
+         },
         body: JSON.stringify({ status: newStatus }),
       });
       if (!res.ok) throw new Error("Failed to update status");

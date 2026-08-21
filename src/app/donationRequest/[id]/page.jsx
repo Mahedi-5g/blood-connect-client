@@ -40,7 +40,7 @@ const DonationDetailsPage = () => {
 
             try {
                 setLoading(true);
-                const res = await fetch(`http://localhost:5000/requests/${params.id}`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/requests/${params.id}`, {
                     headers: {
                         authorization: `Bearer ${token}` 
                     }

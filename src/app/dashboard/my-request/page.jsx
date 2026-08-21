@@ -26,7 +26,13 @@ export default function MyDonationRequests() {
     const fetchAllRequests = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:5000/my-requests-full?email=${session.user.email}&status=${statusFilter}&page=${currentPage}&limit=${itemsPerPage}`);
+        const {data:tokenData} = await authClient.token();
+        const res = await fetch(`http://localhost:5000/my-requests-full?email=${session.user.email}&status=${statusFilter}&page=${currentPage}&limit=${itemsPerPage}`,{
+           headers: {
+          "Content-Type": "application/json",
+          "authorization": `Bearer ${tokenData?.token}`,
+        },
+        });
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setRequests(data.requests || []);
@@ -43,9 +49,13 @@ export default function MyDonationRequests() {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
+      const {data:tokenData} = await authClient.token();
       const res = await fetch(`http://localhost:5000/requests/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+         headers: {
+          "Content-Type": "application/json",
+          "authorization": `Bearer ${tokenData?.token}`,
+        },
         body: JSON.stringify({ status: newStatus }),
       });
       if (!res.ok) throw new Error("Failed");

@@ -5,13 +5,20 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { MoreVertical, ShieldCheck, UserCheck, Lock, Unlock } from 'lucide-react';
 import Image from 'next/image';
+import { authClient } from '@/lib/auth-client';
 
 const UsersTable = ({ users, refetch }) => {
     const [openMenuId, setOpenMenuId] = useState(null);
 
     const handleAction = async (userId, updateData, successMessage) => {
         try {
-            const res = await axios.patch(`http://localhost:5000/users/update-role-status/${userId}`, updateData);
+            const {data:tokenData} = await authClient.token();
+            const res = await axios.patch(`http://localhost:5000/users/update-role-status/${userId}`,{
+                headers: {
+                        "Content-Type": "application/json",
+                        "authorization":`Bearer ${tokenData?.token}`
+                    },
+            }, updateData);
             if (res.data.modifiedCount > 0 || res.data.acknowledged) {
                 toast.success(successMessage);
                 refetch();
