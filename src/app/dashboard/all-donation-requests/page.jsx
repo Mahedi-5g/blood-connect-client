@@ -10,7 +10,7 @@ import { authClient } from '@/lib/auth-client';
 
 const AllBloodDonationRequests = () => {
     const { data: session } = authClient.useSession();
-    const userRole = session?.user?.role || 'volunteer'; // default fallback 'volunteer'
+    const userRole = session?.user?.role || 'volunteer';
 
     const [filterStatus, setFilterStatus] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
@@ -19,7 +19,13 @@ const AllBloodDonationRequests = () => {
     const { data: requests = [], isLoading, isError, refetch } = useQuery({
         queryKey: ['all-blood-donation-requests', filterStatus],
         queryFn: async () => {
-            const res = await axios.get(`http://localhost:5000/all-requests?status=${filterStatus}`);
+            const {data:tokenData} = await authClient.token();
+            const res = await axios.get(`http://localhost:5000/all-requests?status=${filterStatus}`,{
+                headers:{
+                    authorization:`Bearer ${tokenData?.token}`,
+                     "Content-Type": "application/json"
+                }
+            });
             return res.data;
         },
     });
@@ -60,7 +66,6 @@ const AllBloodDonationRequests = () => {
                 </div>
             ) : (
                 <>
-                    {/* role পাঠাল টেবিল কম্পোনেন্ট বুজবে Edit/Delete অপশন দেখাবে কিনা */}
                     <RequestsTable 
                         requests={currentRequests} 
                         refetch={refetch} 

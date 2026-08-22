@@ -41,7 +41,6 @@ const DashboardSidebar = () => {
 
   return (
     <aside className="w-64 bg-white border-r shadow-sm flex flex-col h-screen sticky top-0 shrink-0">
-      {/* Scrollable Nav Items */}
       <div className="flex-1 overflow-y-auto no-scrollbar">
         {/* Top Home Button */}
         <div className="p-5 pb-2">

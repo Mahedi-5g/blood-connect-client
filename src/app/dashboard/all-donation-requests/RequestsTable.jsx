@@ -6,11 +6,11 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 import { MoreVertical, Eye, Edit3, Trash2, CheckCircle2, XCircle } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 
 const RequestsTable = ({ requests, refetch, role }) => {
     const [openMenuId, setOpenMenuId] = useState(null);
 
-    // ১. Status Update Handler (Admin & Volunteer both can access)
     const handleStatusChange = async (id, newStatus) => {
         try {
             const res = await axios.patch(`http://localhost:5000/requests/status/${id}`, { status: newStatus });
@@ -26,7 +26,6 @@ const RequestsTable = ({ requests, refetch, role }) => {
         }
     };
 
-    // ২. Delete Request Handler (Only Admin)
     const handleDelete = async (id) => {
         setOpenMenuId(null);
         const result = await Swal.fire({
@@ -41,7 +40,13 @@ const RequestsTable = ({ requests, refetch, role }) => {
 
         if (result.isConfirmed) {
             try {
-                const res = await axios.delete(`http://localhost:5000/requests/${id}`);
+                const { data: tokenData } = await authClient.token();
+                const res = await axios.delete(`http://localhost:5000/requests/${id}`, {
+                    headers: {
+                        authorization: `Bearer ${tokenData?.token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
                 if (res.data.deletedCount > 0) {
                     toast.success('Donation request deleted successfully');
                     refetch();
@@ -104,12 +109,11 @@ const RequestsTable = ({ requests, refetch, role }) => {
 
                                     {/* Status Badge */}
                                     <td className="p-4">
-                                        <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase ${
-                                            req.status === 'pending' ? 'bg-amber-100 text-amber-700' :
-                                            req.status === 'inprogress' ? 'bg-blue-100 text-blue-700' :
-                                            req.status === 'done' ? 'bg-emerald-100 text-emerald-700' :
-                                            'bg-rose-100 text-rose-700'
-                                        }`}>
+                                        <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase ${req.status === 'pending' ? 'bg-amber-100 text-amber-700' :
+                                                req.status === 'inprogress' ? 'bg-blue-100 text-blue-700' :
+                                                    req.status === 'done' ? 'bg-emerald-100 text-emerald-700' :
+                                                        'bg-rose-100 text-rose-700'
+                                            }`}>
                                             {req.status}
                                         </span>
                                     </td>
@@ -125,8 +129,7 @@ const RequestsTable = ({ requests, refetch, role }) => {
 
                                         {openMenuId === req._id && (
                                             <div className="absolute right-4 mt-1 w-48 bg-white border border-slate-100 rounded-xl shadow-xl z-30 text-left py-2 space-y-1">
-                                                
-                                                {/* In-progress থাকলে Done / Cancel করার সুযোগ (Volunteer & Admin both can update status) */}
+
                                                 {req.status === 'inprogress' && (
                                                     <>
                                                         <button
@@ -144,7 +147,6 @@ const RequestsTable = ({ requests, refetch, role }) => {
                                                     </>
                                                 )}
 
-                                                {/* View Details Link (Available for all) */}
                                                 <Link
                                                     href={`/donation-requests/${req._id}`}
                                                     className="w-full px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2"
@@ -152,7 +154,6 @@ const RequestsTable = ({ requests, refetch, role }) => {
                                                     <Eye className="w-4 h-4" /> View Details
                                                 </Link>
 
-                                                {/* ONLY ADMIN CAN EDIT AND DELETE */}
                                                 {role === 'admin' && (
                                                     <>
                                                         <Link
