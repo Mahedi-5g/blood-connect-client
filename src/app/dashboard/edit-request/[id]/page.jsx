@@ -49,7 +49,7 @@ const EditDonationRequestPage = () => {
 
             if (params?.id) {
                 const reqRes = await fetch(
-                    `http://localhost:5000/requests/${params.id}`,
+                    `${process.env.NEXT_PUBLIC_API_URL}/requests/${params.id}`,
                     {
                         headers: {
                             "Content-Type": "application/json",
@@ -144,7 +144,7 @@ const EditDonationRequestPage = () => {
 
             const { _id, ...cleanFormData } = formData;
 
-            const res = await fetch(`http://localhost:5000/requests/${params.id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/requests/${params.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

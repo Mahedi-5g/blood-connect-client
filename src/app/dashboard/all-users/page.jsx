@@ -14,7 +14,7 @@ const AllUsersPage = () => {
         queryKey: ['users', status],
         queryFn: async () => {
             const {data:tokenData} = await authClient.token();
-            const res = await axios.get(`http://localhost:5000/users?status=${status}`,{
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users?status=${status}`,{
                 headers: {
                         "Content-Type": "application/json",
                         "authorization":`Bearer ${tokenData?.token}`

@@ -26,7 +26,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
     try {
       const { data: tokenData } = await authClient.token();
 
-      const res = await fetch("http://localhost:5000/api/checkout-sessions", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/checkout-sessions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -16,9 +16,9 @@ export default function FundingPage() {
   const fetchFunds = async () => {
     try {
       const {data:tokenData} = await authClient.token();
-      console.log(tokenData);
+      console.log(token);
       setLoading(true);
-      const res = await fetch('http://localhost:5000/api/funds',{
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/funds`,{
         headers: {
                         "Content-Type": "application/json",
                         "authorization":`Bearer ${tokenData?.token}`

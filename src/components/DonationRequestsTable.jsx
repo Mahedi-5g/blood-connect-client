@@ -12,7 +12,7 @@ export default function DonationRequestsTable({ requests, onStatusChange, onDele
     if (!deleteId) return;
     try {
       const { data: tokenData } = await authClient.token();
-      const res = await fetch(`http://localhost:5000/requests/${deleteId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/requests/${deleteId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

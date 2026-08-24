@@ -25,7 +25,7 @@ const ActionDropdown = ({ user, refetch }) => {
 
         try {
             setLoading(true);
-            const res = await axios.patch(`http://localhost:5000${url}`, body);
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, body);
             if (res.data.modifiedCount > 0) {
                 Swal.fire('Success!', successMessage, 'success');
                 refetch(); 

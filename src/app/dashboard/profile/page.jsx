@@ -44,7 +44,7 @@ export default function ProfilePage() {
         try {
             const {data:tokenData} = await authClient.token();
             const res = await fetch(
-                `http://localhost:5000/user/update-profile?email=${session?.user?.email}`,
+                `${process.env.NEXT_PUBLIC_API_URL}/user/update-profile?email=${session?.user?.email}`,
                 {
                     method: "PATCH",
                     headers: {

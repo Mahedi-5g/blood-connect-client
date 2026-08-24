@@ -27,7 +27,7 @@ export default function MyDonationRequests() {
       setLoading(true);
       try {
         const {data:tokenData} = await authClient.token();
-        const res = await fetch(`http://localhost:5000/my-requests-full?email=${session.user.email}&status=${statusFilter}&page=${currentPage}&limit=${itemsPerPage}`,{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-requests-full?email=${session.user.email}&status=${statusFilter}&page=${currentPage}&limit=${itemsPerPage}`,{
            headers: {
           "Content-Type": "application/json",
           "authorization": `Bearer ${tokenData?.token}`,
@@ -50,7 +50,7 @@ export default function MyDonationRequests() {
   const handleStatusChange = async (id, newStatus) => {
     try {
       const {data:tokenData} = await authClient.token();
-      const res = await fetch(`http://localhost:5000/requests/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/requests/${id}`, {
         method: "PATCH",
          headers: {
           "Content-Type": "application/json",

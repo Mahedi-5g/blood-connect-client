@@ -26,7 +26,7 @@ export default function DonationRequestsPage() {
     useEffect(() => {
         const fetchRequests = async () => {
             try {
-                const res = await fetch("http://localhost:5000/requests");
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/requests`);
 
                 if (!res.ok) {
                     throw new Error("Failed to fetch requests");

@@ -14,7 +14,7 @@ export default function AdminVolunteerDashboard() {
         const fetchStats = async () => {
             try {
                 const { data: tokenData } = await authClient.token();
-                const res = await fetch("http://localhost:5000/admin/stats", {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/stats`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

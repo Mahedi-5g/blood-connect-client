@@ -31,7 +31,7 @@ export default async function SuccessPage({ searchParams }) {
 
 
   try {
-    await fetch('http://localhost:5000/api/funds', {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/funds`, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',

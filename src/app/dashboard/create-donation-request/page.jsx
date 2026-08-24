@@ -62,7 +62,7 @@ export default function CreateDonationRequest() {
     const checkUserStatus = async () => {
       try {
         const {data:tokenData} = await authClient.token();
-        const res = await fetch(`http://localhost:5000/users/status?email=${session.user.email}`,{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/status?email=${session.user.email}`,{
            headers: {
           "Content-Type": "application/json",
           "authorization": `Bearer ${tokenData?.token}`,
@@ -124,7 +124,7 @@ export default function CreateDonationRequest() {
 
     try {
       const {data:tokenData} = await authClient.token();
-      const res = await fetch("http://localhost:5000/requests", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/requests`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

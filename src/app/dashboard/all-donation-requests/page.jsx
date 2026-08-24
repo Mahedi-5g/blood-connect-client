@@ -20,7 +20,7 @@ const AllBloodDonationRequests = () => {
         queryKey: ['all-blood-donation-requests', filterStatus],
         queryFn: async () => {
             const {data:tokenData} = await authClient.token();
-            const res = await axios.get(`http://localhost:5000/all-requests?status=${filterStatus}`,{
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/all-requests?status=${filterStatus}`,{
                 headers:{
                     authorization:`Bearer ${tokenData?.token}`,
                      "Content-Type": "application/json"

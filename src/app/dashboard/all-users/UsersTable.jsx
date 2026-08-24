@@ -13,7 +13,7 @@ const UsersTable = ({ users, refetch }) => {
     const handleAction = async (userId, updateData, successMessage) => {
         try {
             const {data:tokenData} = await authClient.token();
-            const res = await axios.patch(`http://localhost:5000/users/update-role-status/${userId}`,{
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/users/update-role-status/${userId}`,{
                 headers: {
                         "Content-Type": "application/json",
                         "authorization":`Bearer ${tokenData?.token}`

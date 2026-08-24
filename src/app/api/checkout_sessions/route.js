@@ -6,7 +6,7 @@ export async function POST() {
     try {
         const headersList = await headers();
         const origin =
-            headersList.get("origin") || "http://localhost:3000";
+            headersList.get("origin") || `${process.env.BETTER_AUTH_URL}`;
 
         const session = await stripe.checkout.sessions.create({
             line_items: [

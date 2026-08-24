@@ -13,7 +13,7 @@ const RequestsTable = ({ requests, refetch, role }) => {
 
     const handleStatusChange = async (id, newStatus) => {
         try {
-            const res = await axios.patch(`http://localhost:5000/requests/status/${id}`, { status: newStatus });
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/requests/status/${id}`, { status: newStatus });
             if (res.data.modifiedCount > 0) {
                 toast.success(`Request status updated to ${newStatus}`);
                 refetch();
@@ -41,7 +41,7 @@ const RequestsTable = ({ requests, refetch, role }) => {
         if (result.isConfirmed) {
             try {
                 const { data: tokenData } = await authClient.token();
-                const res = await axios.delete(`http://localhost:5000/requests/${id}`, {
+                const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/requests/${id}`, {
                     headers: {
                         authorization: `Bearer ${tokenData?.token}`,
                         "Content-Type": "application/json"
