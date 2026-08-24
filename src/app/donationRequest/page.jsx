@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingAnimation from "@/components/LoadingAnimation";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@heroui/react";
 import { MapPin, Calendar } from "lucide-react";
@@ -46,11 +47,9 @@ export default function DonationRequestsPage() {
 
     if (loading) {
         return (
-            <section className="py-24">
-                <div className="text-center text-lg font-semibold">
-                    Loading...
+                <div className="flex justify-center items-center min-h-screen">
+                    <LoadingAnimation></LoadingAnimation>
                 </div>
-            </section>
         );
     }
 

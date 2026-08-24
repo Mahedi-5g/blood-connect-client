@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import LoadingAnimation from "./LoadingAnimation";
 
 export default function RecentBloodRequests() {
     const [requests, setRequests] = useState([]);
@@ -51,11 +52,9 @@ export default function RecentBloodRequests() {
 
     if (loading) {
         return (
-            <section className="py-24">
-                <div className="text-center text-lg font-semibold">
-                    Loading...
-                </div>
-            </section>
+            <div className="flex justify-center items-center min-h-screen">
+                <LoadingAnimation></LoadingAnimation>
+            </div>
         );
     }
 

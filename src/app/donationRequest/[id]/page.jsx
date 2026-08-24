@@ -1,5 +1,7 @@
 "use client";
 
+import Error from '@/app/error';
+import LoadingAnimation from '@/components/LoadingAnimation';
 import PrivateRoute from '@/components/PrivateRoute';
 import { authClient } from '@/lib/auth-client';
 import { useParams, useRouter } from 'next/navigation';
@@ -42,7 +44,7 @@ const DonationDetailsPage = () => {
                 setLoading(true);
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/requests/${params.id}`, {
                     headers: {
-                        authorization: `Bearer ${token}` 
+                        authorization: `Bearer ${token}`
                     }
                 });
 
@@ -84,7 +86,7 @@ const DonationDetailsPage = () => {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json",
-                        "authorization": `Bearer ${token}` 
+                        "authorization": `Bearer ${token}`
                     },
                     body: JSON.stringify({
                         status: "inprogress",
@@ -127,11 +129,15 @@ const DonationDetailsPage = () => {
 
     if (loading) {
         return (
-            <section className="py-24">
-                <div className="text-center text-lg font-semibold text-slate-600">
-                    Loading...
-                </div>
-            </section>
+            <div className="flex justify-center items-center min-h-screen">
+                <LoadingAnimation></LoadingAnimation>
+            </div>
+        );
+    }
+
+    if(!request){
+        return (
+            <Error></Error>
         );
     }
 
