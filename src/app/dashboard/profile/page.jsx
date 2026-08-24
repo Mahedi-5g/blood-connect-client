@@ -92,8 +92,8 @@ export default function ProfilePage() {
                 <div className="bg-white rounded-3xl shadow-sm overflow-hidden border mb-8">
                     <div className="relative h-28 bg-linear-to-r from-slate-800 to-amber-950">
 
-                        <div className="absolute -bottom-10 left-8 z-10 gap-4">
-                            <Avatar className="w-20 h-20 border-4 rounded-full border-white shadow-xl text-xl">
+                        <div className="absolute -bottom-6 lg:-bottom-10 left-4 lg:left-8 z-10 gap-4">
+                            <Avatar className="w-14 md:w-20 h-14 md:h-20 border-3 md:border-4 rounded-full border-white shadow-xl text-xl">
                                 <Avatar.Image
                                     src={user?.image || "/default-avatar.png"}
                                     name={user?.name}
@@ -101,21 +101,21 @@ export default function ProfilePage() {
                             </Avatar>
                         </div>
 
-                        <div className="absolute bottom-2 left-32 z-10">
-                            <div className="flex items-center gap-3">
-                                <h2 className="text-2xl font-bold text-white drop-shadow-sm">
+                        <div className="absolute bottom-5 md:bottom-2 left-20 md:left-28 z-10">
+                            <div className="md:flex lg:flex items-center gap-3">
+                                <h2 className="text-xl md:text-2xl font-bold text-white drop-shadow-sm">
                                     {user?.name || "Donor"}
                                 </h2>
-                                <p className="py-0.5 px-2 rounded-lg bg-green-500 text-white text-xs font-bold capitalize">Active {user?.role || "user"}</p>
+                                <p className="w-fit py-0.5 px-2 rounded-lg bg-green-500 text-white text-xs font-bold capitalize">Active {user?.role || "user"}</p>
                             </div>
                         </div>
 
                         {/* Blood Group Badge */}
-                        <div className="absolute right-8 -bottom-10 bg-white border border-red-100 rounded-2xl px-6 py-2 text-center shadow-md min-w-[100px]">
+                        <div className="absolute right-4  md:right-8 -bottom-10 bg-white border border-red-100 rounded-2xl px-3 md:px-5 lg:px-6 py-2 text-center shadow-md min-w-[100px]">
                             <p className="text-[10px] tracking-wider uppercase font-bold text-red-500">
                                 Blood Group
                             </p>
-                            <h2 className="text-2xl font-black text-red-600 mt-0.5">{user?.bloodGroup || "N/A"}</h2>
+                            <h2 className="text-lg md:2xl font-black text-red-600 mt-0.5">{user?.bloodGroup || "N/A"}</h2>
                         </div>
                     </div>
 

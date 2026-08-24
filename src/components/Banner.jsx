@@ -53,7 +53,7 @@ const Banner = () => {
 
 
                         {/* Heading */}
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-semibold lg:font-bold leading-tight text-slate-700">
+                        <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold leading-tight text-slate-700">
 
                             <AnimatedGradientText>
                                 Donate Blood,

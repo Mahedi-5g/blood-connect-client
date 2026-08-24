@@ -60,10 +60,10 @@ export default function RecentBloodRequests() {
     }
 
     return (
-        <section className="py-24 bg-[#fbf9f4]">
+        <section className="py-12 md:py-24 bg-[#fbf9f4]">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl font-extrabold text-black tracking-tight">
+                    <h2 className="text-3xl md:text-4xl font-bold text-black tracking-tight">
                         Recent Blood Requests
                     </h2>
                     <p className="mt-3 text-base text-gray-700 font-medium">

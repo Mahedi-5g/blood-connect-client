@@ -10,8 +10,8 @@ export default function DashboardLayout({ children }) {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="dashboard-layout flex">
-        <DashboardSidebar />
-        <main className="p-4">{children}</main>
+        < DashboardSidebar/>
+        <main className="flex-1 p-4 md:p-6 pt-12 md:pt-12 lg:pt-6">{children}</main>
       </div>
     </QueryClientProvider>
   );

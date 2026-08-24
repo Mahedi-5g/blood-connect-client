@@ -28,7 +28,7 @@ export default function FeaturedSection() {
         <section className="py-24 bg-white">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="text-center mb-14">
-                    <h2 className="text-4xl font-bold text-slate-800">
+                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800">
                         Why Choose
                         <span className="text-red-500"> BloodConnect?</span>
                     </h2>

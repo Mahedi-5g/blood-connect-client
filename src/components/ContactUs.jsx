@@ -5,11 +5,11 @@ import { Button, Input, TextArea } from "@heroui/react";
 
 export default function ContactUs() {
     return (
-        <section className="py-24 bg-[#fbf9f4]">
+        <section className="py-12 md:py-24 bg-[#fbf9f4]">
             <div className="max-w-7xl mx-auto px-6">
                 {/* Header Section */}
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl font-extrabold text-black tracking-tight">
+                <div className="text-center mb-10 md:mb-16">
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-black tracking-tight">
                         Contact Us
                     </h2>
                     <p className="mt-3 text-base text-gray-700 font-medium">
@@ -23,7 +23,7 @@ export default function ContactUs() {
                     {/* Left Column: Info */}
                     <div className="md:col-span-5 flex flex-col justify-between pr-0 md:pr-6 space-y-8">
                         <div>
-                            <h3 className="text-3xl font-black text-black tracking-tight leading-tight">
+                            <h3 className="text-2xl md:text-3xl font-black text-black tracking-tight leading-tight">
                                 Let's Save Lives Together
                             </h3>
                             <p className="mt-4 text-gray-600 font-medium leading-relaxed">

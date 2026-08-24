@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation';
 import { stripe } from '../../../lib/stripe';
 import Link from 'next/link';
-import { authClient } from '@/lib/auth-client';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export default async function SuccessPage({ searchParams }) {
   const params = await searchParams;
@@ -21,11 +22,15 @@ export default async function SuccessPage({ searchParams }) {
 
   const customerName = session.customer_details?.name || 'Anonymous Donor';
   const customerEmail = session.customer_details?.email || 'N/A';
-  const amountPaid = session.amount_total / 100; // Cents to USD
+  const amountPaid = session.amount_total / 100; 
   const transactionId = session.payment_intent?.id || session.id;
 
+  const tokenData = await auth.api.getToken({
+    headers:await headers()
+  });
+
+
   try {
-    const {data:tokenData} = await authClient.token();
     await fetch('http://localhost:5000/api/funds', {
       method: 'POST',
       headers: { 
