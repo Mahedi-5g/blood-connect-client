@@ -9,6 +9,7 @@ import DonationRequestsTable from "@/components/DonationRequestsTable";
 import { PiHandWaving } from "react-icons/pi";
 import AdminVolunteerDashboard from "@/components/dashboard/AdminDashboard";
 import { Card, Spinner } from "@heroui/react";
+import LoadingAnimation from "@/components/LoadingAnimation";
 
 export default function DashboardHome() {
   const { data: session, isPending } = authClient.useSession();
@@ -43,7 +44,6 @@ export default function DashboardHome() {
           setRequests(data);
         } catch (error) {
           console.error(error);
-          toast.error("Error loading recent requests");
         } finally { 
           setLoading(false); 
         }
@@ -82,7 +82,7 @@ export default function DashboardHome() {
 
  
   if (isPending) {
-    return <div className="min-h-screen flex items-center justify-center bg-slate-50">Loading Dashboard...</div>;
+    return <div className="min-h-screen flex items-center justify-center bg-slate-50"><LoadingAnimation></LoadingAnimation></div>;
   }
 
   return (

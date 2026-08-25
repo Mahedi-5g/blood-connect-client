@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Suspense } from "react";
 import { authClient } from "@/lib/auth-client";
 import { Label, Radio, RadioGroup } from "@heroui/react";
 import {
@@ -19,13 +19,12 @@ import Link from "next/link";
 import { IoIosWarning } from "react-icons/io";
 import { useRouter, useSearchParams } from "next/navigation";
 
-
 const labelClass = "text-[#334155] font-bold text-sm mb-2 tracking-tight block";
 const wrapperClass = "w-full h-14 bg-white border border-slate-200 focus-within:border-red-400 focus-within:ring-[4px] focus-within:ring-red-500/10 rounded-xl transition-all duration-200 flex items-center px-4 gap-3";
 const inputClass = "text-slate-800 text-sm font-medium placeholder:text-slate-400 w-full bg-transparent outline-none border-none p-0 focus:ring-0";
 const selectClass = "w-full h-14 bg-white border border-slate-200 focus:border-red-400 focus:ring-[4px] focus:ring-red-500/10 rounded-xl transition-all duration-200 flex items-center px-4 gap-3 appearance-none cursor-pointer text-slate-800 text-sm font-medium outline-none";
 
-export default function SignUpPage() {
+function SignUpForm() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -67,7 +66,7 @@ export default function SignUpPage() {
     const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [role, setRole] = useState("donor")
+    const [role, setRole] = useState("donor");
 
     const fileInputRef = useRef(null);
     const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
@@ -156,7 +155,6 @@ export default function SignUpPage() {
             district: selectedDistrict?.name || "",
             upazila: formData.upazila,
             bloodGroup: selectedBlood
-
         });
 
         setLoading(false);
@@ -442,5 +440,13 @@ export default function SignUpPage() {
 
             </div>
         </section>
+    );
+}
+
+export default function SignUpPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-[#fbf9f4] flex items-center justify-center text-gray-500">Loading...</div>}>
+            <SignUpForm />
+        </Suspense>
     );
 }

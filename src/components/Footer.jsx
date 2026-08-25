@@ -22,7 +22,7 @@ function Footer() {
                             <div>
                                 <Link href={"/"}>
                                     <Image
-                                        src={"/bloodLogo.jpeg"}
+                                        src={"/BloodLogo.jpeg"}
                                         alt="logo"
                                         width={55}
                                         height={55}
