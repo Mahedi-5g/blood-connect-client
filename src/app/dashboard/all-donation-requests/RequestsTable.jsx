@@ -148,7 +148,7 @@ const RequestsTable = ({ requests, refetch, role }) => {
                                                 )}
 
                                                 <Link
-                                                    href={`/donation-requests/${req._id}`}
+                                                    href={`/donationRequest/${req._id}`}
                                                     className="w-full px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2"
                                                 >
                                                     <Eye className="w-4 h-4" /> View Details
@@ -157,7 +157,7 @@ const RequestsTable = ({ requests, refetch, role }) => {
                                                 {role === 'admin' && (
                                                     <>
                                                         <Link
-                                                            href={`/dashboard/edit-donation-request/${req._id}`}
+                                                            href={`/dashboard/edit-request/${req._id}`}
                                                             className="w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
                                                         >
                                                             <Edit3 className="w-4 h-4 text-slate-500" /> Edit Request
