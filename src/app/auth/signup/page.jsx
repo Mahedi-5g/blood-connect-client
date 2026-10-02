@@ -19,10 +19,10 @@ import Link from "next/link";
 import { IoIosWarning } from "react-icons/io";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const labelClass = "text-[#334155] font-bold text-sm mb-2 tracking-tight block";
-const wrapperClass = "w-full h-14 bg-white border border-slate-200 focus-within:border-red-400 focus-within:ring-[4px] focus-within:ring-red-500/10 rounded-xl transition-all duration-200 flex items-center px-4 gap-3";
-const inputClass = "text-slate-800 text-sm font-medium placeholder:text-slate-400 w-full bg-transparent outline-none border-none p-0 focus:ring-0";
-const selectClass = "w-full h-14 bg-white border border-slate-200 focus:border-red-400 focus:ring-[4px] focus:ring-red-500/10 rounded-xl transition-all duration-200 flex items-center px-4 gap-3 appearance-none cursor-pointer text-slate-800 text-sm font-medium outline-none";
+const labelClass = "text-slate-700 dark:text-slate-300 font-bold text-sm mb-2 tracking-tight block";
+const wrapperClass = "w-full h-14 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus-within:border-red-400 focus-within:ring-[4px] focus-within:ring-red-500/10 rounded-xl transition-all duration-200 flex items-center px-4 gap-3";
+const inputClass = "text-slate-800 dark:text-white text-sm font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 w-full bg-transparent outline-none border-none p-0 focus:ring-0";
+const selectClass = "w-full h-14 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-red-400 focus:ring-[4px] focus:ring-red-500/10 rounded-xl transition-all duration-200 flex items-center px-4 gap-3 appearance-none cursor-pointer text-slate-800 dark:text-white text-sm font-medium outline-none";
 
 function SignUpForm() {
     const searchParams = useSearchParams();
@@ -169,15 +169,15 @@ function SignUpForm() {
     };
 
     return (
-        <section className="py-16 bg-[#fbf9f4] min-h-screen flex items-center justify-center">
-            <div className="w-full max-w-3xl bg-white rounded-[32px] p-8 md:p-12 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] border border-gray-100">
+        <section className="py-16 bg-[#fbf9f4] dark:bg-slate-950 min-h-screen flex items-center justify-center transition-colors">
+            <div className="w-full max-w-3xl bg-white dark:bg-slate-900 rounded-[32px] p-8 md:p-12 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] dark:shadow-none border border-gray-100 dark:border-slate-800">
 
                 {/* Title Content */}
                 <div className="text-center mb-8">
-                    <h2 className="text-4xl font-extrabold text-[#de3b3b] tracking-tight">
+                    <h2 className="text-4xl font-extrabold text-[#de3b3b] dark:text-rose-500 tracking-tight">
                         Join the Lifesaving Community
                     </h2>
-                    <p className="mt-2 text-sm text-gray-500 font-medium">
+                    <p className="mt-2 text-sm text-gray-500 dark:text-slate-400 font-medium">
                         Create an account to become a donor and save lives
                     </p>
                 </div>
@@ -185,19 +185,19 @@ function SignUpForm() {
                 {/* Profile Photo Uploader */}
                 <div className="flex flex-col items-center mb-8">
                     <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
-                        <div className="w-28 h-28 bg-[#fdf6f0] rounded-full flex items-center justify-center overflow-hidden border border-gray-100 shadow-sm">
+                        <div className="w-28 h-28 bg-[#fdf6f0] dark:bg-slate-800 rounded-full flex items-center justify-center overflow-hidden border border-gray-100 dark:border-slate-700 shadow-xs">
                             {imagePreview ? (
                                 <Image src={imagePreview} alt="Profile preview" width={112} height={112} className="w-full h-full object-cover" />
                             ) : (
-                                <FaUser className="w-10 h-10 text-gray-300" />
+                                <FaUser className="w-10 h-10 text-gray-300 dark:text-slate-600" />
                             )}
                         </div>
-                        <div className="absolute bottom-1 right-1 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md border border-gray-100">
-                            <FaCamera className="w-3 h-3 text-gray-500" />
+                        <div className="absolute bottom-1 right-1 w-7 h-7 bg-white dark:bg-slate-700 rounded-full flex items-center justify-center shadow-md border border-gray-100 dark:border-slate-600">
+                            <FaCamera className="w-3 h-3 text-gray-500 dark:text-slate-300" />
                         </div>
                         <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
                     </div>
-                    <span className="text-xs font-bold text-gray-700 mt-3 tracking-wide">Profile Photo</span>
+                    <span className="text-xs font-bold text-gray-700 dark:text-slate-300 mt-3 tracking-wide">Profile Photo</span>
                 </div>
 
                 {/* Error Box */}
@@ -290,7 +290,7 @@ function SignUpForm() {
                                 </span>
                                 <select
                                     value={formData.district}
-                                    className="w-full h-14 pl-11 pr-10 border border-slate-200 rounded-xl"
+                                    className="w-full h-14 pl-11 pr-10 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-xl"
                                     onChange={(e) => {
                                         const districtId = e.target.value;
                                         handleInputChange("district", districtId);
@@ -302,10 +302,10 @@ function SignUpForm() {
                                         handleInputChange("upazila", "");
                                     }}
                                 >
-                                    <option value="">Select District</option>
+                                    <option value="" className="dark:bg-slate-800">Select District</option>
 
                                     {districts.map((district) => (
-                                        <option key={district.id} value={district.id}>
+                                        <option key={district.id} value={district.id} className="dark:bg-slate-800">
                                             {district.name}
                                         </option>
                                     ))}
@@ -321,17 +321,18 @@ function SignUpForm() {
                                 </span>
                                 <select
                                     value={formData.upazila}
-                                    className="w-full h-14 pl-11 pr-10 border border-slate-200 rounded-xl"
+                                    className="w-full h-14 pl-11 pr-10 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-xl"
                                     onChange={(e) =>
                                         handleInputChange("upazila", e.target.value)
                                     }
                                 >
-                                    <option value="">Select Upazila</option>
+                                    <option value="" className="dark:bg-slate-800">Select Upazila</option>
 
                                     {filteredUpazilas.map((upazila) => (
                                         <option
                                             key={upazila.id}
                                             value={upazila.name}
+                                            className="dark:bg-slate-800"
                                         >
                                             {upazila.name}
                                         </option>
@@ -352,7 +353,7 @@ function SignUpForm() {
                                     onClick={() => setSelectedBlood(bg)}
                                     className={`h-11 rounded-xl border font-bold text-sm transition-all duration-200 ${selectedBlood === bg
                                         ? "bg-[#de3b3b] text-white border-[#de3b3b] shadow-sm scale-95 cursor-pointer"
-                                        : "bg-white text-gray-800 border-gray-200 hover:border-gray-300 cursor-pointer"
+                                        : "bg-white dark:bg-slate-800 text-gray-800 dark:text-slate-200 border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 cursor-pointer"
                                         }`}
                                 >
                                     {bg}

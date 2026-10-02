@@ -43,19 +43,19 @@ export default function LoginPage() {
     };
 
     const wrapperClass =
-        "mt-2 w-full flex items-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3";
-    const labelClass = "text-[#334155] font-bold text-sm mb-2 tracking-tight block";
-    const inputClass = "text-slate-800 text-sm font-medium placeholder:text-slate-400 w-full bg-transparent outline-none border-none p-0 focus:ring-0";
+        "mt-2 w-full flex items-center gap-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 focus-within:border-red-500 transition-colors";
+    const labelClass = "text-slate-700 dark:text-slate-300 font-bold text-sm mb-2 tracking-tight block";
+    const inputClass = "text-slate-800 dark:text-white text-sm font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 w-full bg-transparent outline-none border-none p-0 focus:ring-0";
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-red-50 via-white to-rose-50 flex items-center justify-center px-4 py-10">
-            <div className="max-w-6xl overflow-hidden rounded-3xl bg-white shadow-2xl grid md:grid-cols-2">
+        <div className="min-h-screen bg-linear-to-br from-red-50 via-white to-rose-50 dark:from-slate-950 dark:via-neutral-900 dark:to-slate-950 flex items-center justify-center px-4 py-10 transition-colors">
+            <div className="max-w-6xl overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-2xl grid md:grid-cols-2">
 
                 {/* Left Side - Form */}
                 <div className="p-8 flex flex-col justify-center">
                     <div className="mb-8">
-                        <h1 className="text-4xl font-bold text-slate-800">Welcome Back</h1>
-                        <p className="mt-3 text-slate-500">
+                        <h1 className="text-4xl font-bold text-slate-800 dark:text-white">Welcome Back</h1>
+                        <p className="mt-3 text-slate-500 dark:text-slate-400">
                             Sign in to manage your donations and help save lives.
                         </p>
                     </div>

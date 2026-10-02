@@ -23,22 +23,23 @@ import {
 import { BiDonateBlood } from "react-icons/bi";
 import { LuGitPullRequestCreate } from "react-icons/lu";
 import { MdOutlineDashboard, MdOutlinePlaylistPlay } from 'react-icons/md';
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const SidebarContent = ({ session, userRole, pathname, setIsOpen, router }) => {
   const getLinkClass = (href) => {
     const isActive = pathname === href;
     return `flex items-center gap-3 rounded-xl px-3 py-2.5 transition font-medium text-sm ${isActive
       ? "bg-red-500 text-white shadow-md shadow-red-500/20"
-      : "text-slate-600 hover:bg-red-50 hover:text-red-600"
+      : "text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-slate-800 hover:text-red-600 dark:hover:text-red-400"
       }`;
   };
 
   const getIconClass = (href) => {
-    return `size-5 ${pathname === href ? "text-white" : "text-slate-500 group-hover:text-red-600"}`;
+    return `size-5 ${pathname === href ? "text-white" : "text-slate-500 dark:text-slate-400 group-hover:text-red-600 dark:group-hover:text-red-400"}`;
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-white dark:bg-slate-900 transition-colors">
       <div className="flex-1 overflow-y-auto no-scrollbar">
         {/* Top Home Button */}
         <div className="p-5 pb-2">
@@ -55,7 +56,7 @@ const SidebarContent = ({ session, userRole, pathname, setIsOpen, router }) => {
         <div className="p-5 pt-2">
           {/* Main Menu Section */}
           <div className="mb-8">
-            <p className="text-xs tracking-[5px] text-slate-400 mb-4 font-bold">
+            <p className="text-xs tracking-[5px] text-slate-400 dark:text-slate-500 mb-4 font-bold">
               MAIN MENU
             </p>
 
@@ -139,9 +140,14 @@ const SidebarContent = ({ session, userRole, pathname, setIsOpen, router }) => {
       </div>
 
       {/* Fixed Bottom Profile & Logout */}
-      <div className="border-t p-5 bg-slate-50/50 shrink-0">
-        <div className="flex items-center gap-3 mb-5">
-          <Avatar className="w-10 h-10 border-2 rounded-full border-red-200 shrink-0">
+      <div className="border-t border-slate-200 dark:border-slate-800 p-4 bg-slate-50/80 dark:bg-slate-900/90 shrink-0">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200/60 dark:border-slate-800/80">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Theme</span>
+          <ThemeToggle />
+        </div>
+
+        <div className="flex items-center gap-3 mb-4">
+          <Avatar className="w-10 h-10 border-2 rounded-full border-red-200 dark:border-red-900/50 shrink-0">
             {session?.user?.image ? (
               <Image
                 src={session.user.image}
@@ -151,7 +157,7 @@ const SidebarContent = ({ session, userRole, pathname, setIsOpen, router }) => {
                 className="w-full h-full object-cover rounded-full"
               />
             ) : (
-              <span className="font-semibold text-red-600">
+              <span className="font-semibold text-red-600 dark:text-red-400">
                 {session?.user?.name?.charAt(0) || "U"}
               </span>
             )}
@@ -159,14 +165,14 @@ const SidebarContent = ({ session, userRole, pathname, setIsOpen, router }) => {
 
           <div className="overflow-hidden min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <p className="font-semibold text-sm text-slate-800 truncate">
+              <p className="font-semibold text-sm text-slate-800 dark:text-white truncate">
                 {session?.user?.name || "User"}
               </p>
-              <span className="text-[10px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded uppercase shrink-0">
+              <span className="text-[10px] bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 font-bold px-1.5 py-0.5 rounded uppercase shrink-0">
                 {userRole}
               </span>
             </div>
-            <p className="text-xs text-gray-500 truncate">
+            <p className="text-xs text-gray-500 dark:text-slate-400 truncate">
               {session?.user?.email}
             </p>
           </div>
@@ -175,7 +181,7 @@ const SidebarContent = ({ session, userRole, pathname, setIsOpen, router }) => {
         <Button
           color="danger"
           variant="flat"
-          className="w-full text-red-600 bg-red-50 hover:bg-red-100 font-semibold"
+          className="w-full text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/40 font-semibold"
           onPress={async () => {
             setIsOpen(false);
             await authClient.signOut();
@@ -209,7 +215,7 @@ const DashboardSidebar = () => {
   return (
     <>
       {/* Mobile & Medium Screen Drawer Trigger Topbar */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b px-4 flex items-center justify-between z-40">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 flex items-center justify-between z-40 transition-colors">
         <div className="flex items-center gap-2">
           <Button
             isIconOnly
@@ -217,24 +223,23 @@ const DashboardSidebar = () => {
             onPress={() => setIsOpen(true)}
             aria-label="Open Menu"
           >
-            <Bars className="size-6 text-slate-700" />
+            <Bars className="size-6 text-slate-700 dark:text-slate-200" />
           </Button>
-          <span className="font-bold text-slate-800">Dashboard</span>
+          <span className="font-bold text-slate-800 dark:text-white">Dashboard</span>
         </div>
+        <ThemeToggle />
       </div>
 
-      {/* Mobile & Medium Screen HeroUI Drawer */}
-      {/* Mobile & Medium Screen HeroUI Drawer */}
       {/* Mobile & Medium Screen HeroUI Drawer */}
       <Drawer isOpen={isOpen} onOpenChange={setIsOpen} placement="left">
         <Drawer.Backdrop>
           <Drawer.Content
             placement="left"
             style={{ height: '100vh', maxHeight: '100vh', margin: 0, borderRadius: 0 }}
-            className="w-64 p-0"
+            className="w-64 p-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800"
           >
             <Drawer.Dialog style={{ height: '100%' }} className="flex flex-col p-0">
-              <Drawer.CloseTrigger className="z-50" />
+              <Drawer.CloseTrigger className="z-50 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white" />
               <Drawer.Body style={{ height: '100%', overflow: 'hidden' }} className="p-0">
                 <SidebarContent {...sidebarProps} />
               </Drawer.Body>
@@ -243,7 +248,7 @@ const DashboardSidebar = () => {
         </Drawer.Backdrop>
       </Drawer>
       {/* Large Desktop Screen Fixed Sidebar */}
-      <aside className="hidden lg:flex w-64 bg-white border-r shadow-sm flex-col h-screen sticky top-0 shrink-0">
+      <aside className="hidden lg:flex w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-xs flex-col h-screen sticky top-0 shrink-0 transition-colors">
         <SidebarContent {...sidebarProps} />
       </aside>
     </>

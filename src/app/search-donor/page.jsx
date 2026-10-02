@@ -76,26 +76,25 @@ export default function SearchDonorsPage() {
     }
   };
   return (
-    <div className="min-h-screen bg-slate-50/50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-12 px-4 sm:px-6 lg:px-8 transition-colors">
       <div className="max-w-6xl mx-auto space-y-10">
 
-
         <div className="text-center max-w-xl mx-auto space-y-3">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
-            Find Available <span className="text-red-600">Blood Donors</span>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight sm:text-4xl">
+            Find Available <span className="text-red-600 dark:text-rose-500">Blood Donors</span>
           </h1>
-          <p className="text-sm text-slate-500 leading-relaxed">
+          <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
             Search for life-saving donors near your location by selecting the blood group, district, and upazila.
           </p>
         </div>
 
         {/* 🔍 Search Form Card */}
-        <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-100 max-w-4xl mx-auto">
+        <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl shadow-xl dark:shadow-none border border-slate-100 dark:border-slate-800 max-w-4xl mx-auto">
           <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
 
             {/* Blood Group */}
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1">
                 <Droplet className="w-3.5 h-3.5 text-red-500" /> Blood Group
               </label>
               <select
@@ -103,18 +102,18 @@ export default function SearchDonorsPage() {
                 required
                 value={searchParams.bloodGroup}
                 onChange={handleChange}
-                className="w-full h-12 px-4 border border-slate-200 focus:border-red-500 rounded-xl text-slate-800 text-sm font-bold outline-none bg-white transition"
+                className="w-full h-12 px-4 border border-slate-200 dark:border-slate-700 focus:border-red-500 rounded-xl text-slate-800 dark:text-white text-sm font-bold outline-none bg-white dark:bg-slate-800 transition"
               >
-                <option value="">Select Group</option>
+                <option value="" className="dark:bg-slate-800 text-slate-800 dark:text-white">Select Group</option>
                 {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((group) => (
-                  <option key={group} value={group}>{group}</option>
+                  <option key={group} value={group} className="dark:bg-slate-800 text-slate-800 dark:text-white">{group}</option>
                 ))}
               </select>
             </div>
 
             {/* District */}
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5" /> District
               </label>
               <select
@@ -144,12 +143,12 @@ export default function SearchDonorsPage() {
 
                   setFilteredUpazilas(filtered);
                 }}
-                className="w-full h-12 px-4 border border-slate-200 focus:border-red-500 rounded-xl text-slate-800 text-sm font-bold outline-none bg-white transition"
+                className="w-full h-12 px-4 border border-slate-200 dark:border-slate-700 focus:border-red-500 rounded-xl text-slate-800 dark:text-white text-sm font-bold outline-none bg-white dark:bg-slate-800 transition"
               >
-                <option value="">Select District</option>
+                <option value="" className="dark:bg-slate-800 text-slate-800 dark:text-white">Select District</option>
 
                 {districts.map((district) => (
-                  <option key={district.id} value={district.name}>
+                  <option key={district.id} value={district.name} className="dark:bg-slate-800 text-slate-800 dark:text-white">
                     {district.name}
                   </option>
                 ))}
@@ -158,7 +157,7 @@ export default function SearchDonorsPage() {
 
             {/* Upazila */}
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5" /> Upazila
               </label>
               <select
@@ -171,12 +170,12 @@ export default function SearchDonorsPage() {
                     upazila: e.target.value,
                   }))
                 }
-                className="w-full h-12 px-4 border border-slate-200 focus:border-red-500 rounded-xl text-slate-800 text-sm font-bold outline-none bg-white transition"
+                className="w-full h-12 px-4 border border-slate-200 dark:border-slate-700 focus:border-red-500 rounded-xl text-slate-800 dark:text-white text-sm font-bold outline-none bg-white dark:bg-slate-800 transition"
               >
-                <option value="">Select Upazila</option>
+                <option value="" className="dark:bg-slate-800 text-slate-800 dark:text-white">Select Upazila</option>
 
                 {filteredUpazilas.map((upazila) => (
-                  <option key={upazila.id} value={upazila.name}>
+                  <option key={upazila.id} value={upazila.name} className="dark:bg-slate-800 text-slate-800 dark:text-white">
                     {upazila.name}
                   </option>
                 ))}
@@ -188,7 +187,7 @@ export default function SearchDonorsPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-12 bg-red-600 hover:bg-red-700 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-red-600/15 transition flex items-center justify-center gap-2 disabled:bg-slate-300"
+                className="w-full h-12 bg-red-600 hover:bg-red-700 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-red-600/15 transition flex items-center justify-center gap-2 disabled:bg-slate-300 dark:disabled:bg-slate-700"
               >
                 <Search className="w-4 h-4" />
                 {loading ? "Searching..." : "Search Donors"}
@@ -200,51 +199,51 @@ export default function SearchDonorsPage() {
         {/* 📊 Donors List Result Section */}
         <div className="pt-4">
           {!hasSearched ? (
-            <div className="text-center p-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl max-w-lg mx-auto">
-              <Search className="w-8 h-8 text-slate-300 mx-auto mb-3" />
+            <div className="text-center p-12 bg-slate-50 dark:bg-slate-900/50 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg mx-auto">
+              <Search className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
               <p className="text-sm text-slate-400 font-medium">
                 Results will appear here after you submit the search form.
               </p>
             </div>
           ) : loading ? (
-            <div className="text-center py-12 font-bold text-slate-600">
+            <div className="text-center py-12 font-bold text-slate-600 dark:text-slate-300">
               Searching for potential lifesavers...
             </div>
           ) : donors.length === 0 ? (
-            <div className="text-center p-12 bg-white border border-slate-100 rounded-3xl max-w-lg mx-auto shadow-sm space-y-2">
-              <Inbox className="w-10 h-10 text-slate-300 mx-auto" />
-              <h3 className="text-base font-bold text-slate-800">No Donors Found</h3>
+            <div className="text-center p-12 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl max-w-lg mx-auto shadow-xs space-y-2">
+              <Inbox className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto" />
+              <h3 className="text-base font-bold text-slate-800 dark:text-white">No Donors Found</h3>
               <p className="text-xs text-slate-400">
                 Try searching with a different location or blood group.
               </p>
             </div>
           ) : (
             <div className="space-y-6">
-              <h2 className="text-lg font-bold text-slate-800 px-2">
+              <h2 className="text-lg font-bold text-slate-800 dark:text-white px-2">
                 Found {donors.length} Matching {donors.length === 1 ? "Donor" : "Donors"}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {donors.map((donor) => (
                   <div
                     key={donor._id}
-                    className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 hover:shadow-md hover:border-slate-200/80 transition relative overflow-hidden group"
+                    className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xs p-6 hover:shadow-md hover:border-slate-200/80 dark:hover:border-slate-700 transition relative overflow-hidden group"
                   >
                     {/* Blood Group Tag */}
-                    <div className="absolute top-0 right-0 bg-red-50 text-red-600 font-black px-4 py-2 rounded-bl-xl text-sm group-hover:bg-red-600 group-hover:text-white transition-colors duration-200">
+                    <div className="absolute top-0 right-0 bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 font-black px-4 py-2 rounded-bl-xl text-sm group-hover:bg-red-600 group-hover:text-white transition-colors duration-200">
                       {donor.bloodGroup}
                     </div>
 
                     <div className="space-y-4">
                       {/* Name & Avatar Placeholder */}
                       <div className="flex items-center gap-3">
-                        <Avatar className="w-10 h-10 border-2 rounded-full border-white shadow-xl text-xl">
+                        <Avatar className="w-10 h-10 border-2 rounded-full border-white dark:border-slate-800 shadow-xl text-xl">
                           <Avatar.Image
                             src={donor?.image || "/default-avatar.png"}
                             name={donor?.name}
                           />
                         </Avatar>
                         <div>
-                          <h3 className="font-bold text-slate-900 flex items-center gap-1.5">
+                          <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                             {donor.name}
                           </h3>
                           <p className="text-xs text-slate-400 font-medium capitalize">
@@ -253,10 +252,10 @@ export default function SearchDonorsPage() {
                         </div>
                       </div>
 
-                      <hr className="border-slate-100" />
+                      <hr className="border-slate-100 dark:border-slate-800" />
 
                       {/* Location & Contact Info */}
-                      <div className="space-y-2 text-xs font-semibold text-slate-600">
+                      <div className="space-y-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
                         <div className="flex items-center gap-2">
                           <MapPin className="w-3.5 h-3.5 text-slate-400" />
                           <span>{donor.upazila}, {donor.district}</span>

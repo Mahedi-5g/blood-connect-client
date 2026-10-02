@@ -9,9 +9,9 @@ export default function DashboardLayout({ children }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="dashboard-layout flex">
-        < DashboardSidebar/>
-        <main className="flex-1 p-4 md:p-6 pt-12 md:pt-12 lg:pt-6">{children}</main>
+      <div className="dashboard-layout flex min-h-screen bg-slate-50/60 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+        <DashboardSidebar />
+        <main className="flex-1 p-4 md:p-6 pt-20 lg:pt-6">{children}</main>
       </div>
     </QueryClientProvider>
   );

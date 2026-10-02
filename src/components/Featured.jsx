@@ -25,15 +25,15 @@ export default function FeaturedSection() {
     ];
 
     return (
-        <section className="py-24 bg-white">
+        <section className="py-24 bg-white dark:bg-slate-900 transition-colors">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="text-center mb-14">
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800">
+                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-white">
                         Why Choose
-                        <span className="text-red-500"> BloodConnect?</span>
+                        <span className="text-red-500 dark:text-red-400"> BloodConnect?</span>
                     </h2>
 
-                    <p className="mt-4 text-slate-500 max-w-2xl mx-auto">
+                    <p className="mt-4 text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
                         We make blood donation faster, safer, and more accessible
                         for everyone.
                     </p>
@@ -43,17 +43,17 @@ export default function FeaturedSection() {
                     {features.map((feature, index) => (
                         <div
                             key={index}
-                            className="group p-8 rounded-3xl border border-red-100 bg-white shadow-sm hover:shadow-xl transition-all duration-300"
+                            className="group p-8 rounded-3xl border border-red-100 dark:border-slate-800 bg-white dark:bg-slate-800/60 shadow-xs hover:shadow-xl transition-all duration-300"
                         >
-                            <div className="w-16 h-16 rounded-2xl bg-red-100 text-red-500 flex items-center justify-center mb-6">
+                            <div className="w-16 h-16 rounded-2xl bg-red-100 dark:bg-red-950/60 text-red-500 dark:text-red-400 flex items-center justify-center mb-6">
                                 {feature.icon}
                             </div>
 
-                            <h3 className="text-xl font-semibold text-slate-800 mb-3">
+                            <h3 className="text-xl font-semibold text-slate-800 dark:text-white mb-3">
                                 {feature.title}
                             </h3>
 
-                            <p className="text-slate-500">
+                            <p className="text-slate-500 dark:text-slate-400">
                                 {feature.description}
                             </p>
                         </div>

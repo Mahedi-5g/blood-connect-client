@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
 import ConditionalFooter from "@/components/ConditionalFooter";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -25,15 +26,23 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${poppins.variable} ${inter.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col font-sans antialiased bg-background text-foreground">
-        <Navbar />
-        <main>
-          {children}
-          <Toaster position="top-right" reverseOrder={false} />
+      <body className="min-h-full flex flex-col font-sans antialiased bg-background text-foreground transition-colors duration-200">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Navbar />
+          <main>
+            {children}
+            <Toaster position="top-right" reverseOrder={false} />
           </main>
           <ConditionalFooter></ConditionalFooter>
+        </ThemeProvider>
       </body>
     </html>
   );
